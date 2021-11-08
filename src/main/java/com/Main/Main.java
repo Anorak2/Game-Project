@@ -15,7 +15,7 @@ public class Main extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
             Scene scene = new Scene(fxmlLoader.load(), 200, 400);
             stage.setResizable(false);
-            stage.setTitle("Pick a Game!!");
+            stage.setTitle("Epic Games");
             stage.setScene(scene);
             stage.show();
         }

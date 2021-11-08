@@ -46,44 +46,62 @@ public class BlackjackController extends MenuController {
     ArrayList<Card> dealer = new ArrayList<Card>();
     Boolean Stand = false;
 
-    public BlackjackController() {
+    public void initialize() {
         //create deck
-        for (int x = 0; x < 14; x++)
+        for (int x = 2; x < 15; x++)
             deck.add(new Card("Spade", x));
-        for (int x = 0; x < 14; x++)
+        for (int x = 2; x < 15; x++)
             deck.add(new Card("Club", x));
-        for (int x = 0; x < 14; x++)
+        for (int x = 2; x < 15; x++)
             deck.add(new Card("Heart", x));
-        for (int x = 0; x < 14; x++)
+        for (int x = 2; x < 15; x++)
             deck.add(new Card("Diamond", x));
+        PlayerHandText.setText("");
+        DealerHandText.setText("");
+        DrawDealer();
     }
+
     public void DrawPlayer(ActionEvent e){
         if(!Stand){
             Card temp = drawRandomCard();
             player.add(temp);
             displayPlayerCard(temp);
         }
-        if(total(player) > 21)
+        if(getTotal(player) > 21)
             dealerWins();
     }
     public void StandPlayer(ActionEvent e){
         Stand = true;
         DrawButton.setVisible(false);
         StandButton.setVisible(false);
-    }
-    public void DrawDealer(ActionEvent e){
-        if(!Stand){
-            Card temp = drawRandomCard();
-            dealer.add(temp);
-            displayDealerCard(temp);
+        while(true) {
+            DrawDealer();
+            if (getTotal(dealer) > getTotal(player) || getTotal(dealer) > 21)
+                break;
         }
+        if(getTotal(dealer) > 21)
+            playerWins();
+        else if(getTotal(dealer) > getTotal(player))
+            dealerWins();
+        else
+            playerWins();
+    }
+    public void DrawDealer(){
+        Card temp = drawRandomCard();
+        dealer.add(temp);
+        displayDealerCard(temp);
     }
 
     public void dealerWins(){
+        DrawButton.setVisible(false);
+        StandButton.setVisible(false);
+    }
+    public void playerWins(){
 
     }
+
     public Card drawRandomCard(){
-        int x  = (int) (Math.random() *52 +1);
+        int x  = (int) (Math.random() *deck.size() +1);
         Card temp = deck.get(x);
         deck.remove(x);
         return temp;
@@ -91,30 +109,30 @@ public class BlackjackController extends MenuController {
     public void displayPlayerCard(Card card){
         String temp = "";
         if(card.getSuite().equals("Spade"))
-            temp = "of Spades";
+            temp = " of Spades";
         if(card.getSuite().equals("Club"))
-            temp = "of Clubs";
-        if(card.getSuite().equals("heart"))
-            temp = "of Hearts";
+            temp = " of Clubs";
+        if(card.getSuite().equals("Heart"))
+            temp = " of Hearts";
         if(card.getSuite().equals("Diamond"))
-            temp = "of Diamonds";
-        PlayerHandText.setText(PlayerHandText.getText() + ", " + temp);
+            temp = " of Diamonds";
+        PlayerHandText.setText(PlayerHandText.getText() + card.getNum() + temp + ", ");
 
     }
     public void displayDealerCard(Card card){
         String temp = "";
         if(card.getSuite().equals("Spade"))
-            temp = "of Spades";
+            temp = " of Spades";
         if(card.getSuite().equals("Club"))
-            temp = "of Clubs";
-        if(card.getSuite().equals("heart"))
-            temp = "of Hearts";
+            temp = " of Clubs";
+        if(card.getSuite().equals("Heart"))
+            temp = " of Hearts";
         if(card.getSuite().equals("Diamond"))
-            temp = "of Diamonds";
-        DealerHandText.setText(DealerHandText.getText() + ", " + temp);
+            temp = " of Diamonds";
+        DealerHandText.setText(DealerHandText.getText() + card.getNum() + temp + ", ");
     }
 
-    public int total(ArrayList<Card> hand){
+    public int getTotal(ArrayList<Card> hand){
         int total = 0;
         for(int x = 0; x < hand.size(); x++){
             if(hand.get(x).getNum() > 10 && hand.get(x).getNum() != 14)

@@ -1,4 +1,5 @@
 module com.example.gameproject {
+    opens com.Main.Games to javafx.fxml ;
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
