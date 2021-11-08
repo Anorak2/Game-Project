@@ -8,7 +8,7 @@
    <children>
       <ScrollPane hbarPolicy="NEVER" prefHeight="400.0" prefWidth="200.0" vbarPolicy="ALWAYS">
          <content>
-            <Button mnemonicParsing="false" onAction="#swapToBlackjack" prefHeight="60.0" prefWidth="190.0" style="-fx-background-color: #838383; -fx-border-color: D3D3D3; -fx-border-width: 1;" text="Blackjack" />
+            <Button mnemonicParsing="false" onAction="#swapToBlackjack" prefHeight="60.0" prefWidth="190.0" style="-fx-background-color: #838383; -fx-border-width: 1;" text="Blackjack" />
          </content></ScrollPane>
    </children>
 </AnchorPane>

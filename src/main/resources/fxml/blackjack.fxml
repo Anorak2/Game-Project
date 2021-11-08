@@ -8,10 +8,11 @@
 <AnchorPane maxHeight="400.0" maxWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.BlackjackController">
    <children>
       <Rectangle fill="DARKGREEN" height="400.0" layoutX="1.0" layoutY="1.0" stroke="BLACK" strokeWidth="2.0" width="600.0" />
-      <Button layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#swapToMenu" style="-fx-background-color: 006400006400;" text="menu" />
+      <Button layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#swapToMenu" style="-fx-background-color: darkgreen;" text="menu" />
       <Button fx:id="StandButton" layoutX="329.0" layoutY="300.0" mnemonicParsing="false" onAction="#StandPlayer" text="Stand" />
       <Button fx:id="DrawButton" layoutX="227.0" layoutY="300.0" mnemonicParsing="false" onAction="#DrawPlayer" text="Draw" />
       <Text fx:id="DealerHandText" layoutX="289.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Text fx:id="PlayerHandText" layoutX="289.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="WinnerText" layoutX="289.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </AnchorPane>

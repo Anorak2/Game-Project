@@ -41,6 +41,8 @@ public class BlackjackController extends MenuController {
     Text PlayerHandText;
     @FXML
     Text DealerHandText;
+    @FXML
+    Text WinnerText;
     ArrayList<Card> deck = new ArrayList<Card>();
     ArrayList<Card> player = new ArrayList<Card>();
     ArrayList<Card> dealer = new ArrayList<Card>();
@@ -59,6 +61,7 @@ public class BlackjackController extends MenuController {
         PlayerHandText.setText("");
         DealerHandText.setText("");
         DrawDealer();
+        WinnerText.setText("");
     }
 
     public void DrawPlayer(ActionEvent e){
@@ -69,6 +72,8 @@ public class BlackjackController extends MenuController {
         }
         if(getTotal(player) > 21)
             dealerWins();
+        else if (getTotal(player) == 21)
+            playerWins();
     }
     public void StandPlayer(ActionEvent e){
         Stand = true;
@@ -86,38 +91,43 @@ public class BlackjackController extends MenuController {
         else
             playerWins();
     }
-    public void DrawDealer(){
-        Card temp = drawRandomCard();
-        dealer.add(temp);
-        displayDealerCard(temp);
-    }
-
-    public void dealerWins(){
+    public void playerWins(){
         DrawButton.setVisible(false);
         StandButton.setVisible(false);
-    }
-    public void playerWins(){
-
-    }
-
-    public Card drawRandomCard(){
-        int x  = (int) (Math.random() *deck.size() +1);
-        Card temp = deck.get(x);
-        deck.remove(x);
-        return temp;
+        WinnerText.setText("You Win!");
     }
     public void displayPlayerCard(Card card){
         String temp = "";
         if(card.getSuite().equals("Spade"))
             temp = " of Spades";
-        if(card.getSuite().equals("Club"))
+        else if(card.getSuite().equals("Club"))
             temp = " of Clubs";
-        if(card.getSuite().equals("Heart"))
+        else if(card.getSuite().equals("Heart"))
             temp = " of Hearts";
-        if(card.getSuite().equals("Diamond"))
+        else if(card.getSuite().equals("Diamond"))
             temp = " of Diamonds";
-        PlayerHandText.setText(PlayerHandText.getText() + card.getNum() + temp + ", ");
+        if(card.getNum() == 14)
+            PlayerHandText.setText(PlayerHandText.getText() + "Ace" + temp + ", ");
+        else if(card.getNum() == 13)
+            PlayerHandText.setText(PlayerHandText.getText() + "King" + temp + ", ");
+        else if(card.getNum() == 12)
+            PlayerHandText.setText(PlayerHandText.getText() + "Queen" + temp + ", ");
+        else if(card.getNum() == 11)
+            PlayerHandText.setText(PlayerHandText.getText() + "Jack" + temp + ", ");
+        else
+            PlayerHandText.setText(PlayerHandText.getText() + card.getNum() + temp + ", ");
 
+    }
+
+    public void DrawDealer(){
+        Card temp = drawRandomCard();
+        dealer.add(temp);
+        displayDealerCard(temp);
+    }
+    public void dealerWins(){
+        DrawButton.setVisible(false);
+        StandButton.setVisible(false);
+        WinnerText.setText("You Lose");
     }
     public void displayDealerCard(Card card){
         String temp = "";
@@ -129,20 +139,41 @@ public class BlackjackController extends MenuController {
             temp = " of Hearts";
         if(card.getSuite().equals("Diamond"))
             temp = " of Diamonds";
-        DealerHandText.setText(DealerHandText.getText() + card.getNum() + temp + ", ");
+        if(card.getNum() == 14)
+            DealerHandText.setText(DealerHandText.getText() + "Ace" + temp + ", ");
+        else if(card.getNum() == 13)
+            DealerHandText.setText(DealerHandText.getText() + "King" + temp + ", ");
+        else if(card.getNum() == 12)
+            DealerHandText.setText(DealerHandText.getText() + "Queen" + temp + ", ");
+        else if(card.getNum() == 11)
+            DealerHandText.setText(DealerHandText.getText() + "Jack" + temp + ", ");
+        else
+            DealerHandText.setText(DealerHandText.getText() + card.getNum() + temp + ", ");
     }
 
+    public Card drawRandomCard(){
+        int x  = (int) (Math.random() *deck.size());
+        Card temp = deck.get(x);
+        deck.remove(x);
+        return temp;
+    }
     public int getTotal(ArrayList<Card> hand){
         int total = 0;
+        //add up face cards and regular numbers
         for(int x = 0; x < hand.size(); x++){
             if(hand.get(x).getNum() > 10 && hand.get(x).getNum() != 14)
                 total += 10;
             else if(hand.get(x).getNum() != 14)
                 total += hand.get(x).getNum();
-            else if(total + 11 > 21)
-                total += 1;
-            else
-                total += 11;
+        }
+        //add up Aces
+        for(int x = 0; x < hand.size(); x++){
+            if(hand.get(x).getNum() == 14){
+                if(total + 11 > 21)
+                    total += 1;
+                else
+                    total += 11;
+            }
         }
         return total;
     }
