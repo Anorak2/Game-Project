@@ -11,8 +11,35 @@
       <Button layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#swapToMenu" style="-fx-background-color: darkgreen;" text="menu" />
       <Button fx:id="StandButton" layoutX="329.0" layoutY="300.0" mnemonicParsing="false" onAction="#StandPlayer" text="Stand" />
       <Button fx:id="DrawButton" layoutX="227.0" layoutY="300.0" mnemonicParsing="false" onAction="#DrawPlayer" text="Draw" />
-      <Text fx:id="DealerHandText" layoutX="289.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
-      <Text fx:id="PlayerHandText" layoutX="289.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Text fx:id="PlayerHandText" layoutX="251.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PlayerHand" visible="false" />
       <Text fx:id="WinnerText" layoutX="289.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+      <Rectangle fx:id="PlayerCard1" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="225.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard2" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="250.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard3" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="275.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard4" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="300.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard5" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="325.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard6" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="350.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="PlayerCard7" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="375.0" layoutY="172.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Text fx:id="PlayerNum1" layoutX="232.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum2" layoutX="257.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum3" layoutX="282.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum4" layoutX="307.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum5" layoutX="332.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum6" layoutX="357.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="PlayerNum7" layoutX="382.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Rectangle fx:id="DealerCard1" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="225.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard2" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="250.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard3" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="275.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard4" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="300.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard5" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="325.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard6" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="350.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Rectangle fx:id="DealerCard7" arcHeight="15.0" arcWidth="10.0" fill="#fffcdd" height="110.0" layoutX="375.0" layoutY="42.0" stroke="BLACK" strokeType="INSIDE" visible="false" width="55.0" />
+      <Text fx:id="DealerText1" layoutX="232.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText2" layoutX="257.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText3" layoutX="282.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText4" layoutX="307.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText5" layoutX="332.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText6" layoutX="357.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
+      <Text fx:id="DealerText7" layoutX="382.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" visible="false" />
    </children>
 </AnchorPane>
