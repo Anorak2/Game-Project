@@ -108,6 +108,9 @@ public class BlackjackController extends MenuController {
         player.clear();
         dealer.clear();
         hideAllCards();
+        DrawButton.setVisible(true);
+        StandButton.setVisible(true);
+        Stand = false;
         for (int x = 2; x < 15; x++)
             deck.add(new Card("Spade", x));
         for (int x = 2; x < 15; x++)
