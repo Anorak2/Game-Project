@@ -5,13 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
 import java.util.ArrayList;
 
 public class BlackjackController extends MenuController {
-    private class Card implements Comparable<Card>{
-        String suite = "";
-        int num = -1;
+    private static class Card implements Comparable<Card>{
+        String suite;
+        int num;
 
         public Card(String suite, int num) {
             this.suite = suite;
@@ -32,7 +31,6 @@ public class BlackjackController extends MenuController {
             return num;
         }
     }
-
 
     @FXML
     Button DrawButton;
@@ -96,9 +94,13 @@ public class BlackjackController extends MenuController {
     Text DealerText6;
     @FXML
     Text DealerText7;
-    ArrayList<Card> deck = new ArrayList<Card>();
-    ArrayList<Card> player = new ArrayList<Card>();
-    ArrayList<Card> dealer = new ArrayList<Card>();
+    @FXML
+    Text PlayerBottomNum;
+    @FXML
+    Text DealerBottomNum;
+    ArrayList<Card> deck = new ArrayList<>();
+    ArrayList<Card> player = new ArrayList<>();
+    ArrayList<Card> dealer = new ArrayList<>();
     Boolean Stand = false;
 
 
@@ -111,6 +113,8 @@ public class BlackjackController extends MenuController {
         DrawButton.setVisible(true);
         StandButton.setVisible(true);
         Stand = false;
+        PlayerBottomNum.setX(0);
+        DealerBottomNum.setX(0);
         for (int x = 2; x < 15; x++)
             deck.add(new Card("Spade", x));
         for (int x = 2; x < 15; x++)
@@ -132,36 +136,49 @@ public class BlackjackController extends MenuController {
             displayPlayerCard();
         }
         if(getTotal(player) > 21)
-            dealerWins();
+            winner("Dealer");
         else if (getTotal(player) == 21)
-            playerWins();
+            winner("Player");
     }
-    public void StandPlayer(){
+    public void StandPlayer() {
         Stand = true;
         DrawButton.setVisible(false);
         StandButton.setVisible(false);
         while(true) {
             DrawDealer();
-            if (getTotal(dealer) > getTotal(player) || getTotal(dealer) > 21)
+            if (getTotal(dealer) > 21 || getTotal(dealer) == getTotal(player) || getTotal(dealer) > getTotal(player))
                 break;
         }
         if(getTotal(dealer) > 21)
-            playerWins();
+            winner("Player");
         else if(getTotal(dealer) > getTotal(player))
-            dealerWins();
+            winner("Dealer");
+        else if(getTotal(dealer) == getTotal(player)){
+            if(getTotal(dealer) > 16)
+                winner("Tie");
+            else{
+                while (true){
+                    DrawDealer();
+                    if(getTotal(dealer) > 21){
+                        winner("Player");
+                        break;
+                    }
+                    else if(getTotal(dealer) > getTotal(player)){
+                        winner("Dealer");
+                        break;
+                    }
+                }
+            }
+        }
         else
-            playerWins();
-    }
-    public void playerWins(){
-        DrawButton.setVisible(false);
-        StandButton.setVisible(false);
-        WinnerText.setText("You Win!");
+            winner("Player");
     }
     public void displayPlayerCard(){
         if(player.size() >= 1) {
             PlayerCard1.setVisible(true);
             PlayerNum1.setVisible(true);
             PlayerNum1.setText(returnNum(player.get(0)));
+            PlayerBottomNum.setVisible(true);
         }
         if(player.size() >= 2) {
             PlayerCard2.setVisible(true);
@@ -193,17 +210,14 @@ public class BlackjackController extends MenuController {
             PlayerNum7.setVisible(true);
             PlayerNum7.setText(returnNum(player.get(6)));
         }
+        PlayerBottomNum.setText(returnNum(player.get(player.size()-1)));
+        PlayerBottomNum.setX(25 * (player.size()-1));
     }
 
-    public void DrawDealer(){
+    public void DrawDealer() {
         Card temp = drawRandomCard();
         dealer.add(temp);
         displayDealerCard();
-    }
-    public void dealerWins(){
-        DrawButton.setVisible(false);
-        StandButton.setVisible(false);
-        WinnerText.setText("You Lose");
     }
     public void displayDealerCard(){
         if(dealer.size() >= 1) {
@@ -241,8 +255,27 @@ public class BlackjackController extends MenuController {
             DealerText7.setVisible(true);
             DealerText7.setText(returnNum(dealer.get(6)));
         }
+        DealerBottomNum.setText(returnNum(dealer.get(dealer.size()-1)));
+        DealerBottomNum.setX(25 * (dealer.size()-1));
     }
 
+    public void winner(String x){
+        if(x.equals("Dealer")){
+            DrawButton.setVisible(false);
+            StandButton.setVisible(false);
+            WinnerText.setText("You Lose");
+        }
+        else if(x.equals("Player")){
+            DrawButton.setVisible(false);
+            StandButton.setVisible(false);
+            WinnerText.setText("You Win!");
+        }
+        else {
+            DrawButton.setVisible(false);
+            StandButton.setVisible(false);
+            WinnerText.setText("It's a Tie!");
+        }
+    }
     public String returnNum(Card card){
         if(card.getNum() == 14)
             return "A";
@@ -264,16 +297,16 @@ public class BlackjackController extends MenuController {
     public int getTotal(ArrayList<Card> hand){
         int total = 0;
         //add up face cards and regular numbers
-        for(int x = 0; x < hand.size(); x++){
-            if(hand.get(x).getNum() > 10 && hand.get(x).getNum() != 14)
+        for (Card card : hand) {
+            if (card.getNum() > 10 && card.getNum() != 14)
                 total += 10;
-            else if(hand.get(x).getNum() != 14)
-                total += hand.get(x).getNum();
+            else if (card.getNum() != 14)
+                total += card.getNum();
         }
         //add up Aces
-        for(int x = 0; x < hand.size(); x++){
-            if(hand.get(x).getNum() == 14){
-                if(total + 11 > 21)
+        for (Card card : hand) {
+            if (card.getNum() == 14) {
+                if (total + 11 > 21)
                     total += 1;
                 else
                     total += 11;
