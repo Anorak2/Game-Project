@@ -31,4 +31,11 @@ public class MenuController {
         stage.setScene(scene);
         stage.show();
     }
+    public void swapToCheckers(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/checkers.fxml")));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

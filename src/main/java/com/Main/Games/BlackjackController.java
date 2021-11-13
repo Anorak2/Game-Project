@@ -348,4 +348,3 @@ public class BlackjackController extends MenuController {
         DealerText7.setVisible(false);
     }
 }
-
