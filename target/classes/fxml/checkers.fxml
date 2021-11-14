@@ -113,77 +113,78 @@
             <RowConstraints minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
         </rowConstraints>
-         <children><Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="0" GridPane.columnIndex="7" />
+         <children>
+             <Button fx:id="Button0" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+             <Button fx:id="Button1" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+             <Button fx:id="Button2" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+             <Button fx:id="Button3" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+             <Button fx:id="Button4" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="0" />
+             <Button fx:id="Button5" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="0" />
+             <Button fx:id="Button6" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="0" />
+             <Button fx:id="Button7" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="0" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="1" GridPane.columnIndex="7" />
+             <Button fx:id="Button8" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+             <Button fx:id="Button9" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+             <Button fx:id="Button10" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+             <Button fx:id="Button11" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+             <Button fx:id="Button12" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+             <Button fx:id="Button13" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+             <Button fx:id="Button14" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+             <Button fx:id="Button15" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="1" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="2" GridPane.columnIndex="7" />
+             <Button fx:id="Button16" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+             <Button fx:id="Button17" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+             <Button fx:id="Button18" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+             <Button fx:id="Button19" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+             <Button fx:id="Button20" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+             <Button fx:id="Button21" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+             <Button fx:id="Button22" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+             <Button fx:id="Button23" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="2" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="3" GridPane.columnIndex="7" />
+             <Button fx:id="Button24" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+             <Button fx:id="Button25" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+             <Button fx:id="Button26" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+             <Button fx:id="Button27" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+             <Button fx:id="Button28" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+             <Button fx:id="Button29" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+             <Button fx:id="Button30" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+             <Button fx:id="Button31" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="3" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="4" GridPane.columnIndex="7" />
+             <Button fx:id="Button32" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+             <Button fx:id="Button33" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+             <Button fx:id="Button34" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+             <Button fx:id="Button35" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+             <Button fx:id="Button36" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+             <Button fx:id="Button37" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+             <Button fx:id="Button38" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+             <Button fx:id="Button39" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="4" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="5" GridPane.columnIndex="7" />
+             <Button fx:id="Button40" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+             <Button fx:id="Button41" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+             <Button fx:id="Button42" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+             <Button fx:id="Button43" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+             <Button fx:id="Button44" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+             <Button fx:id="Button45" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+             <Button fx:id="Button46" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+             <Button fx:id="Button47" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="5" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="6" GridPane.columnIndex="7" />
+             <Button fx:id="Button48" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+             <Button fx:id="Button49" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+             <Button fx:id="Button50" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+             <Button fx:id="Button51" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+             <Button fx:id="Button52" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+             <Button fx:id="Button53" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="6" />
+             <Button fx:id="Button54" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+             <Button fx:id="Button55" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="6" />
 
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="2" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="3" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="4" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="5" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="6" />
-             <Button layoutX="10.0" layoutY="85.0" mnemonicParsing="false" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.rowIndex="7" GridPane.columnIndex="7" />
+             <Button fx:id="Button56" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+             <Button fx:id="Button57" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+             <Button fx:id="Button58" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+             <Button fx:id="Button59" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+             <Button fx:id="Button60" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+             <Button fx:id="Button61" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+             <Button fx:id="Button62" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="6" GridPane.rowIndex="7" />
+             <Button fx:id="Button63" layoutX="10.0" layoutY="85.0" mnemonicParsing="false" onAction="#callMove" opacity="0.0" prefHeight="75.0" prefWidth="75.0" text="Button" GridPane.columnIndex="7" GridPane.rowIndex="7" />
          </children>
       </GridPane>
     </children>

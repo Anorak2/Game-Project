@@ -39,65 +39,16 @@ public class BlackjackController extends MenuController {
     @FXML
     Text WinnerText;
     @FXML
-    Rectangle PlayerCard1;
+    Rectangle PlayerCard1, PlayerCard2, PlayerCard3, PlayerCard4, PlayerCard5, PlayerCard6, PlayerCard7;
     @FXML
-    Rectangle PlayerCard2;
+    Text PlayerNum1, PlayerNum2, PlayerNum3, PlayerNum4, PlayerNum5, PlayerNum6, PlayerNum7;
     @FXML
-    Rectangle PlayerCard3;
+    Rectangle DealerCard1, DealerCard2, DealerCard3, DealerCard4, DealerCard5, DealerCard6, DealerCard7;
     @FXML
-    Rectangle PlayerCard4;
+    Text DealerText1, DealerText2, DealerText3, DealerText4, DealerText5, DealerText6, DealerText7;
     @FXML
-    Rectangle PlayerCard5;
-    @FXML
-    Rectangle PlayerCard6;
-    @FXML
-    Rectangle PlayerCard7;
-    @FXML
-    Text PlayerNum1;
-    @FXML
-    Text PlayerNum2;
-    @FXML
-    Text PlayerNum3;
-    @FXML
-    Text PlayerNum4;
-    @FXML
-    Text PlayerNum5;
-    @FXML
-    Text PlayerNum6;
-    @FXML
-    Text PlayerNum7;
-    @FXML
-    Rectangle DealerCard1;
-    @FXML
-    Rectangle DealerCard2;
-    @FXML
-    Rectangle DealerCard3;
-    @FXML
-    Rectangle DealerCard4;
-    @FXML
-    Rectangle DealerCard5;
-    @FXML
-    Rectangle DealerCard6;
-    @FXML
-    Rectangle DealerCard7;
-    @FXML
-    Text DealerText1;
-    @FXML
-    Text DealerText2;
-    @FXML
-    Text DealerText3;
-    @FXML
-    Text DealerText4;
-    @FXML
-    Text DealerText5;
-    @FXML
-    Text DealerText6;
-    @FXML
-    Text DealerText7;
-    @FXML
-    Text PlayerBottomNum;
-    @FXML
-    Text DealerBottomNum;
+    Text PlayerBottomNum, DealerBottomNum;
+
     ArrayList<Card> deck = new ArrayList<>();
     ArrayList<Card> player = new ArrayList<>();
     ArrayList<Card> dealer = new ArrayList<>();
