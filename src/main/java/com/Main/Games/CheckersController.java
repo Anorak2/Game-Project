@@ -45,7 +45,7 @@ public class CheckersController {
     int colInput1 = -1;
     int rowInput2 = -1;
     int colInput2 = -1;
-    Piece[][] Board = new Piece[8][8];
+    Piece[][] MainBoard = new Piece[8][8];
 
 
     public void initialize(){
@@ -54,27 +54,43 @@ public class CheckersController {
     }
 
     public void crappyAi(){
-        
-    }
-
-    public void evaluatePosition(int[][] board){
 
     }
-    public ArrayList<int[]> findAllMoves(){
+
+    public void evaluatePosition(Piece[][] board){
+
+    }
+    //Helper method for evaluatePosition
+    public int[] countAll(Piece[][] board){
+        int red = 0;
+        int black = 0;
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(board[x][y].getColor().equals("Red"))
+                    red++;
+                if(board[x][y].getColor().equals("Black"))
+                    black++;
+            }
+        }
+        return new int[] {red, black};
+    }
+
+    //Used to calculate all possible moves for the bot
+    public ArrayList<int[]> findAllBlackMoves(Piece[][] board){
         ArrayList<int[]> moves = new ArrayList<>();
         int[] temp = new int[4];
         for(int x = 8 ; x > -1; x--){
             for(int y = 8; y > -1; y--){
-                if(Board[x][y].getColor().equals("Black")){
-                    if(!Board[x][y].isKing()){
-                        if(canMove(x,y,x+1, y-1)) {
+                if(board[x][y].getColor().equals("Black")){
+                    if(!board[x][y].isKing()){
+                        if(canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(x,y,x+1, y+1)) {
+                        if(canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
@@ -83,28 +99,85 @@ public class CheckersController {
                         }
                     }
                     else {
-                        if(canMove(x,y,x+1, y-1)) {
+                        if(canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(x,y,x+1, y+1)) {
+                        if(canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y+1;
                             moves.add(temp);
                         }
-                        if(canMove(x,y,x-1, y-1)) {
+                        if(canMove(board, x,y,x-1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(x,y,x-1, y+1)) {
+                        if(canMove(board, x,y,x-1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
+    }
+    public ArrayList<int[]> findAllRedMoves(Piece[][] board){
+        ArrayList<int[]> moves = new ArrayList<>();
+        int[] temp = new int[4];
+        for(int x = 8 ; x > -1; x--){
+            for(int y = 8; y > -1; y--){
+                if(board[x][y].getColor().equals("Red")){
+                    if(!board[x][y].isKing()){
+                        if(canMove(board, x,y,x-1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(board, x,y,x-1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                    }
+                    else {
+                        if(canMove(board, x,y,x+1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(board, x,y,x+1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                        if(canMove(board, x,y,x-1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(board, x,y,x-1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
@@ -122,7 +195,7 @@ public class CheckersController {
         if(rowInput1 == -1 && colInput1 == -1) {
             rowInput1 = row;
             colInput1 = column;
-            if(Board[rowInput1][colInput1] == null){
+            if(MainBoard[rowInput1][colInput1] == null){
                 rowInput1 = -1;
                 colInput1 = -1;
             }
@@ -131,16 +204,16 @@ public class CheckersController {
             rowInput2 = row;
             colInput2 = column;
 
-            if(canMove(rowInput1, colInput1, rowInput2, colInput2)) {
-                movePiece(rowInput1, colInput1, rowInput2, colInput2);
+            if(canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
+                movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
                 //Promoting
-                if(Board[rowInput2][colInput2].getColor().equals("Red")) {
+                if(MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
                     if(rowInput2 == 0)
-                        Board[rowInput2][colInput2].upgradeToKing();
+                        MainBoard[rowInput2][colInput2].upgradeToKing();
                 }
                 else{
                     if(rowInput2 == 7)
-                        Board[rowInput2][colInput2].upgradeToKing();
+                        MainBoard[rowInput2][colInput2].upgradeToKing();
                 }
             }
 
@@ -289,14 +362,16 @@ public class CheckersController {
         else if(source == Button63)
             move(7,7);
     }
-    private boolean canMove(int rowInput1, int colInput1, int rowInput2, int colInput2){
+    private boolean canMove(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2){
+        //bound detection
         if((rowInput1 < 0 || rowInput1 > 7) || (colInput2 < 0 ||colInput2 > 7))
             return false;
-        else if(Board[rowInput1][colInput1] == null)
+        //protecting from nulls
+        else if(board[rowInput1][colInput1] == null)
             return false;
-        else if(Board[rowInput2][colInput2] != null)
+        else if(board[rowInput2][colInput2] != null)
             return false;
-        else if(Board[rowInput1][colInput1].isKing()){
+        else if(board[rowInput1][colInput1].isKing()){
             if ((rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2)) {
                 return true;
             }
@@ -306,46 +381,40 @@ public class CheckersController {
             else{
                 //Jumping Logic
                 if(rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2){
-                    if(Board[rowInput1 - 1][colInput1 + 1] != null){
-                        Board[rowInput1-1][colInput1+1] = null;
+                    if(board[rowInput1 - 1][colInput1 + 1] != null){
                         return true;
                     }
                 }
                 else if(rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                    if(Board[rowInput1 - 1][colInput1 - 1] != null){
-                        Board[rowInput1-1][colInput1-1] = null;
+                    if(board[rowInput1 - 1][colInput1 - 1] != null){
                         return true;
                     }
                 }
                 else if(rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2){
-                    if(Board[rowInput1 + 1][colInput1 + 1] != null){
-                        Board[rowInput1 + 1][colInput1 + 1] = null;
+                    if(board[rowInput1 + 1][colInput1 + 1] != null){
                         return true;
                     }
                 }
                 else if(rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                    if(Board[rowInput1 + 1][colInput1 - 1] != null){
-                        Board[rowInput1 + 1][colInput1 - 1] = null;
+                    if(board[rowInput1 + 1][colInput1 - 1] != null){
                         return true;
                     }
                 }
             }
         }
-        else if(Board[rowInput1][colInput1].getColor().equals("Red")){
+        else if(board[rowInput1][colInput1].getColor().equals("Red")){
             //Checking to move diagonally forward one space
             if ((rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2)) {
                 return true;
             }
             //Jumping Logic
             else if(rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2){
-                if(Board[rowInput1 - 1][colInput1 + 1] != null){
-                    Board[rowInput1-1][colInput1+1] = null;
+                if(board[rowInput1 - 1][colInput1 + 1].getColor().equals("Black")){
                     return true;
                 }
-                }
+            }
             else if(rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                if(Board[rowInput1 - 1][colInput1 - 1] != null){
-                    Board[rowInput1-1][colInput1-1] = null;
+                if(board[rowInput1 - 1][colInput1 - 1].getColor().equals("Black")){
                     return true;
                 }
             }
@@ -357,14 +426,12 @@ public class CheckersController {
             }
             //Jumping Logic
             else if(rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2){
-                if(Board[rowInput1 + 1][colInput1 + 1] != null){
-                    Board[rowInput1 + 1][colInput1 + 1] = null;
+                if(board[rowInput1 + 1][colInput1 + 1].getColor().equals("Red")){
                     return true;
                 }
             }
             else if(rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                if(Board[rowInput1 + 1][colInput1 - 1] != null){
-                    Board[rowInput1 + 1][colInput1 - 1] = null;
+                if(board[rowInput1 + 1][colInput1 - 1].getColor().equals("Red")){
                     return true;
                 }
             }
@@ -372,10 +439,22 @@ public class CheckersController {
         return false;
 
     }
-    private void movePiece( int row, int column, int newRow, int newCol){
-        Piece temp = Board[row][column];
-        Board[row][column] = null;
-        Board[newRow][newCol] = temp;
+    private void movePiece(Piece[][] board, int row, int column, int newRow, int newCol){
+        if(row - 2 == newRow && column + 2 == newCol){
+           board[row - 1][column + 1] = null;
+        }
+        else if(row - 2 == newRow && column - 2 == newCol) {
+            board[row - 1][column + 1] = null;
+        }
+        else if(row + 2 == newRow && column + 2 == newCol){
+            board[row + 1][column + 1] = null;
+        }
+        else if(row + 2 == newRow && column - 2 == newCol) {
+            board[row + 1][column - 1] = null;
+        }
+        Piece temp = board[row][column];
+        board[row][column] = null;
+        board[newRow][newCol] = temp;
     }
 
     public void displayBoard(){
@@ -385,7 +464,7 @@ public class CheckersController {
         hide("Black");
         for(int row = 0; row < 8; row++){
             for(int col = 0; col < 8; col++){
-                if(Board[row][col] != null && Board[row][col].getColor().equals("Red")) {
+                if(MainBoard[row][col] != null && MainBoard[row][col].getColor().equals("Red")) {
                     if(numRedMoved == 1) {
                         Red1.setCenterX((col * 75) + 37.5);
                         Red1.setCenterY((row * 75) + 37.5);
@@ -448,7 +527,7 @@ public class CheckersController {
                     }
                     numRedMoved++;
                 }
-                if(Board[row][col] != null && Board[row][col].getColor().equals("Black")) {
+                if(MainBoard[row][col] != null && MainBoard[row][col].getColor().equals("Black")) {
                     if(numBlackMoved == 1) {
                         Black1.setCenterX((col * 75) + 37.5);
                         Black1.setCenterY((row * 75) + 37.5);
@@ -515,31 +594,31 @@ public class CheckersController {
         }
     }
     public void setStarterBoard(){
-        Board[7][0] = new Piece("Red");
-        Board[7][2] = new Piece("Red");
-        Board[7][4] = new Piece("Red");
-        Board[7][6] = new Piece("Red");
-        Board[6][1] = new Piece("Red");
-        Board[6][3] = new Piece("Red");
-        Board[6][5] = new Piece("Red");
-        Board[6][7] = new Piece("Red");
-        Board[5][0] = new Piece("Red");
-        Board[5][2] = new Piece("Red");
-        Board[5][4] = new Piece("Red");
-        Board[5][6] = new Piece("Red");
+        MainBoard[7][0] = new Piece("Red");
+        MainBoard[7][2] = new Piece("Red");
+        MainBoard[7][4] = new Piece("Red");
+        MainBoard[7][6] = new Piece("Red");
+        MainBoard[6][1] = new Piece("Red");
+        MainBoard[6][3] = new Piece("Red");
+        MainBoard[6][5] = new Piece("Red");
+        MainBoard[6][7] = new Piece("Red");
+        MainBoard[5][0] = new Piece("Red");
+        MainBoard[5][2] = new Piece("Red");
+        MainBoard[5][4] = new Piece("Red");
+        MainBoard[5][6] = new Piece("Red");
 
-        Board[0][1] = new Piece("Black");
-        Board[0][3] = new Piece("Black");
-        Board[0][5] = new Piece("Black");
-        Board[0][7] = new Piece("Black");
-        Board[1][0] = new Piece("Black");
-        Board[1][2] = new Piece("Black");
-        Board[1][4] = new Piece("Black");
-        Board[1][6] = new Piece("Black");
-        Board[2][1] = new Piece("Black");
-        Board[2][3] = new Piece("Black");
-        Board[2][5] = new Piece("Black");
-        Board[2][7] = new Piece("Black");
+        MainBoard[0][1] = new Piece("Black");
+        MainBoard[0][3] = new Piece("Black");
+        MainBoard[0][5] = new Piece("Black");
+        MainBoard[0][7] = new Piece("Black");
+        MainBoard[1][0] = new Piece("Black");
+        MainBoard[1][2] = new Piece("Black");
+        MainBoard[1][4] = new Piece("Black");
+        MainBoard[1][6] = new Piece("Black");
+        MainBoard[2][1] = new Piece("Black");
+        MainBoard[2][3] = new Piece("Black");
+        MainBoard[2][5] = new Piece("Black");
+        MainBoard[2][7] = new Piece("Black");
     }
     public void hide(String s){
         if(s.equals("Red")) {
