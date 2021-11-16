@@ -5,6 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Circle;
 
+import java.util.ArrayList;
+
 public class CheckersController {
     private static class Piece{
         private final String color;
@@ -51,26 +53,80 @@ public class CheckersController {
         displayBoard();
     }
 
+    public void crappyAi(){
+        
+    }
+
+    public void evaluatePosition(int[][] board){
+
+    }
+    public ArrayList<int[]> findAllMoves(){
+        ArrayList<int[]> moves = new ArrayList<>();
+        int[] temp = new int[4];
+        for(int x = 8 ; x > -1; x--){
+            for(int y = 8; y > -1; y--){
+                if(Board[x][y].getColor().equals("Black")){
+                    if(!Board[x][y].isKing()){
+                        if(canMove(x,y,x+1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(x,y,x+1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                    }
+                    else {
+                        if(canMove(x,y,x+1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(x,y,x+1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                        if(canMove(x,y,x-1, y-1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-1;
+                            temp[3] = y-1;
+                            moves.add(temp);
+                        }
+                        if(canMove(x,y,x-1, y+1)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-1;
+                            temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
+    }
+
     public void move(int row, int column){
         if(rowInput1 == -1 && colInput1 == -1) {
             rowInput1 = row;
             colInput1 = column;
+            if(Board[rowInput1][colInput1] == null){
+                rowInput1 = -1;
+                colInput1 = -1;
+            }
         }
-        /*
-        else {
-            rowInput2 = row;
-            colInput2 = column;
-            Piece temp = Board[rowInput1][colInput1];
-            Board[rowInput1][colInput1] = null;
-            Board[rowInput2][colInput2] = temp;
-
-            displayBoard();
-            rowInput1 = -1;
-            colInput1 = -1;
-            rowInput2 = -1;
-            colInput2 = -1;
-        }
-        */
         else {
             rowInput2 = row;
             colInput2 = column;
