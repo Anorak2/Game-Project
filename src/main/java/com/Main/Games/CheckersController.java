@@ -54,43 +54,65 @@ public class CheckersController {
     }
 
     public void crappyAi(){
+        ArrayList<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
+        //ArrayList<int[]> allMovesRed = findAllRedMoves(MainBoard);
+        ArrayList<Double> scores = new ArrayList<>();
+        Piece[][] tempBoard = new Piece[8][8];
 
-    }
-
-    public void evaluatePosition(Piece[][] board){
-
-    }
-    //Helper method for evaluatePosition
-    public int[] countAll(Piece[][] board){
-        int red = 0;
-        int black = 0;
-        for(int x = 0; x < 8; x++){
-            for(int y = 0; y < 8; y++){
-                if(board[x][y].getColor().equals("Red"))
-                    red++;
-                if(board[x][y].getColor().equals("Black"))
-                    black++;
-            }
+        for(int x = 0; x < allMovesBlack.size(); x++){
+            equalsToMain(tempBoard);
+            movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
+            scores.add(0, evaluatePosition(tempBoard));
         }
-        return new int[] {red, black};
+        if(allMovesBlack.size() > 1) {
+            Double highest = scores.get(0);
+            int index = 0;
+            for (int x = 1 ; x < scores.size(); x++) {
+                if (scores.get(x) > highest){
+                    highest = scores.get(x);
+                    index = x;
+                }
+            }
+            movePiece(MainBoard, allMovesBlack.get(index)[0], allMovesBlack.get(index)[1], allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]);
+        }
     }
+
+    public double evaluatePosition(Piece[][] board){
+        int[] scores = getScores(board);
+        int[] pieceCount = countAll(board);
+        double positionScoreForBlack = 0;
+        //if all pieces are gone then it's either a fantastic or horrible position
+        if(pieceCount[0] == 0)
+            return 9999;
+        else if(pieceCount[1] == 0)
+            return -9999;
+        //if the score is higher than better position
+        if(scores[0] > scores[1])
+            positionScoreForBlack--;
+        else if(scores[0] < scores[1])
+            positionScoreForBlack--;
+
+        return positionScoreForBlack;
+    }
+
 
     //Used to calculate all possible moves for the bot
     public ArrayList<int[]> findAllBlackMoves(Piece[][] board){
         ArrayList<int[]> moves = new ArrayList<>();
         int[] temp = new int[4];
-        for(int x = 8 ; x > -1; x--){
-            for(int y = 8; y > -1; y--){
-                if(board[x][y].getColor().equals("Black")){
+        for(int x = 7 ; x > -1; x--){
+            for(int y = 7; y > -1; y--){
+                if(board[x][y] != null && board[x][y].getColor().equals("Black")){
                     if(!board[x][y].isKing()){
-                        if(canMove(board, x,y,x+1, y-1)) {
+                        //(!(x+1 > 7) && !(y - 1 < 0)) &&
+                        if((!(x+1 > 7) && !(y-1< 0)) && canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(board, x,y,x+1, y+1)) {
+                        if((!(x+1 > 7) && !(y+1 > 7)) && canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
@@ -99,28 +121,28 @@ public class CheckersController {
                         }
                     }
                     else {
-                        if(canMove(board, x,y,x+1, y-1)) {
+                        if((!(x+1 > 7) && !(y-1< 0)) && canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(board, x,y,x+1, y+1)) {
+                        if((!(x+1 > 7) && !(y+1 > 7)) && canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x+1;
                             temp[3] = y+1;
                             moves.add(temp);
                         }
-                        if(canMove(board, x,y,x-1, y-1)) {
+                        if((!(x-1 > -1) && !(y-1 < 0)) && canMove(board, x,y,x-1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if(canMove(board, x,y,x-1, y+1)) {
+                        if((!(x-1 > -1) && !(y+1 > 7)) && canMove(board, x,y,x-1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
@@ -136,9 +158,9 @@ public class CheckersController {
     public ArrayList<int[]> findAllRedMoves(Piece[][] board){
         ArrayList<int[]> moves = new ArrayList<>();
         int[] temp = new int[4];
-        for(int x = 8 ; x > -1; x--){
-            for(int y = 8; y > -1; y--){
-                if(board[x][y].getColor().equals("Red")){
+        for(int x = 7; x > -1; x--){
+            for(int y = 7; y > -1; y--){
+                if(board[x][y] != null && board[x][y].getColor().equals("Red")){
                     if(!board[x][y].isKing()){
                         if(canMove(board, x,y,x-1, y-1)) {
                             temp[0] = x;
@@ -189,6 +211,48 @@ public class CheckersController {
             }
         }
         return moves;
+    }
+
+    //some helper methods for evaluatePosition, red then black for simplification
+    public int[] countAll(Piece[][] board){
+        int red = 0;
+        int black = 0;
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(board[x][y] != null && board[x][y].getColor().equals("Red"))
+                    red++;
+                if(board[x][y] != null && board[x][y].getColor().equals("Black"))
+                    black++;
+            }
+        }
+        return new int[] {red, black};
+    }
+    public int[] getScores(Piece[][] board){
+        int red = 0;
+        int black = 0;
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                if(board[x][y] != null && board[x][y].getColor().equals("Red")) {
+                    if(board[x][y].isKing())
+                        red += 5;
+                    else
+                        red += 3;
+                }
+                if(board[x][y] != null && board[x][y].getColor().equals("Black"))
+                    if(board[x][y].isKing())
+                        black += 5;
+                    else
+                        black += 3;
+            }
+        }
+        return new int[] {red, black};
+    }
+    public void equalsToMain(Piece[][] tempBoard){
+        for(int x = 0; x < 8; x++){
+            for(int y = 0; y < 8; y++){
+                tempBoard[x][y] = MainBoard[x][y];
+            }
+        }
     }
 
     public void move(int row, int column){
@@ -222,6 +286,7 @@ public class CheckersController {
             colInput1 = -1;
             rowInput2 = -1;
             colInput2 = -1;
+            crappyAi();
         }
     }
     public void callMove(ActionEvent e){
@@ -364,7 +429,7 @@ public class CheckersController {
     }
     private boolean canMove(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2){
         //bound detection
-        if((rowInput1 < 0 || rowInput1 > 7) || (colInput2 < 0 ||colInput2 > 7))
+        if((rowInput1 < 0 || colInput1 > 7) || (rowInput2 < 0 ||colInput2 > 7))
             return false;
         //protecting from nulls
         else if(board[rowInput1][colInput1] == null)
@@ -444,7 +509,7 @@ public class CheckersController {
            board[row - 1][column + 1] = null;
         }
         else if(row - 2 == newRow && column - 2 == newCol) {
-            board[row - 1][column + 1] = null;
+            board[row - 1][column - 1] = null;
         }
         else if(row + 2 == newRow && column + 2 == newCol){
             board[row + 1][column + 1] = null;
@@ -455,6 +520,7 @@ public class CheckersController {
         Piece temp = board[row][column];
         board[row][column] = null;
         board[newRow][newCol] = temp;
+        displayBoard();
     }
 
     public void displayBoard(){
