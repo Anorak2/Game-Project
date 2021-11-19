@@ -59,16 +59,16 @@ public class CheckersController {
         ArrayList<Double> scores = new ArrayList<>();
         Piece[][] tempBoard = new Piece[8][8];
 
-        for(int x = 0; x < allMovesBlack.size(); x++){
+        for (int x = 0; x < allMovesBlack.size(); x++) {
             equalsToMain(tempBoard);
             movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
-            scores.add(0, evaluatePosition(tempBoard));
+            scores.add(x, evaluatePosition(tempBoard));
         }
         if(allMovesBlack.size() > 1) {
             Double highest = scores.get(0);
             int index = 0;
             for (int x = 1 ; x < scores.size(); x++) {
-                if (scores.get(x) > highest){
+                if (scores.get(x) >= highest){
                     highest = scores.get(x);
                     index = x;
                 }
@@ -81,6 +81,10 @@ public class CheckersController {
         int[] scores = getScores(board);
         int[] pieceCount = countAll(board);
         double positionScoreForBlack = 0;
+
+        if (pieceCount[0] < countAll(MainBoard)[0])
+            return 9999;
+
         //if all pieces are gone then it's either a fantastic or horrible position
         if(pieceCount[0] == 0)
             return 9999;
@@ -119,6 +123,21 @@ public class CheckersController {
                             temp[3] = y+1;
                             moves.add(temp);
                         }
+                        //Jumping
+                        if( (!(x+2 > 7) && !(y-2< 0)) && canMove(board, x,y,x+2, y-2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+2;
+                            temp[3] = y-2;
+                            moves.add(temp);
+                        }
+                        if((!(x+2 > 7) && !(y+2 > 7)) && canMove(board, x,y,x+2, y+2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+2;
+                            temp[3] = y+2;
+                            moves.add(temp);
+                        }
                     }
                     else {
                         if((!(x+1 > 7) && !(y-1< 0)) && canMove(board, x,y,x+1, y-1)) {
@@ -147,6 +166,35 @@ public class CheckersController {
                             temp[1] = y;
                             temp[2] = x-1;
                             temp[3] = y+1;
+                            moves.add(temp);
+                        }
+                        //jumping
+                        if( (!(x+2 > 7) && !(y-2< 0)) && canMove(board, x,y,x+2, y-2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+2;
+                            temp[3] = y-2;
+                            moves.add(temp);
+                        }
+                        if((!(x+2 > 7) && !(y+2 > 7)) && canMove(board, x,y,x+2, y+2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x+2;
+                            temp[3] = y+2;
+                            moves.add(temp);
+                        }
+                        if( (!(x-2 > 7) && !(y-2< 0)) && canMove(board, x,y,x+2, y-2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-2;
+                            temp[3] = y-2;
+                            moves.add(temp);
+                        }
+                        if((!(x-2 > 7) && !(y+2 > 7)) && canMove(board, x,y,x+2, y+2)) {
+                            temp[0] = x;
+                            temp[1] = y;
+                            temp[2] = x-2;
+                            temp[3] = y+2;
                             moves.add(temp);
                         }
                     }
@@ -248,11 +296,9 @@ public class CheckersController {
         return new int[] {red, black};
     }
     public void equalsToMain(Piece[][] tempBoard){
-        for(int x = 0; x < 8; x++){
-            for(int y = 0; y < 8; y++){
+        for(int x = 0; x < 8; x++)
+            for(int y = 0; y < 8; y++)
                 tempBoard[x][y] = MainBoard[x][y];
-            }
-        }
     }
 
     public void move(int row, int column){
@@ -436,11 +482,18 @@ public class CheckersController {
             return false;
         else if(board[rowInput2][colInput2] != null)
             return false;
+        //logic for king (board[rowInput1-1][colInput1+1] == null)
         else if(board[rowInput1][colInput1].isKing()){
-            if ((rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2)) {
+            if (rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1-1][colInput1+1] == null)) {
                 return true;
             }
-            else if ((rowInput1 + 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 + 1 == rowInput2 && colInput1 - 1 == colInput2)) {
+            else if(rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2 && (board[rowInput1-1][colInput1-1] == null)){
+                return true;
+            }
+            else if(rowInput1 + 1 == rowInput2 && colInput1 - 1 == colInput2 && (board[rowInput1+1][colInput1-1] == null)) {
+                return true;
+            }
+            else if(rowInput1 + 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1+1][colInput1+1] == null)){
                 return true;
             }
             else{
@@ -467,36 +520,44 @@ public class CheckersController {
                 }
             }
         }
+        //logic for Red
         else if(board[rowInput1][colInput1].getColor().equals("Red")){
             //Checking to move diagonally forward one space
-            if ((rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2)) {
+            if (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2 && (board[rowInput1-1][colInput1-1] == null)) {
+                return true;
+            }
+            else if(rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1-1][colInput1+1] == null)){
                 return true;
             }
             //Jumping Logic
             else if(rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2){
-                if(board[rowInput1 - 1][colInput1 + 1].getColor().equals("Black")){
+                if(board[rowInput1-1][colInput1+1] != null && board[rowInput1 - 1][colInput1 + 1].getColor().equals("Black")){
                     return true;
                 }
             }
             else if(rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                if(board[rowInput1 - 1][colInput1 - 1].getColor().equals("Black")){
+                if(board[rowInput1-1][colInput1-1] != null && board[rowInput1 - 1][colInput1 - 1].getColor().equals("Black")){
                     return true;
                 }
             }
         }
+        //logic for Black
         else{
             //Checking to move diagonally forward one space
-            if ((rowInput1 + 1 == rowInput2 && colInput1 + 1 == colInput2) || (rowInput1 + 1 == rowInput2 && colInput1 - 1 == colInput2)) {
+            if (rowInput1 + 1 == rowInput2 && colInput1 - 1 == colInput2 && (board[rowInput1+1][colInput1-1] == null)) {
+                return true;
+            }
+            else if(rowInput1 + 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1+1][colInput1+1] == null)){
                 return true;
             }
             //Jumping Logic
             else if(rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2){
-                if(board[rowInput1 + 1][colInput1 + 1].getColor().equals("Red")){
+                if(board[rowInput1+1][colInput1+1] != null && board[rowInput1 + 1][colInput1 + 1].getColor().equals("Red")){
                     return true;
                 }
             }
             else if(rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                if(board[rowInput1 + 1][colInput1 - 1].getColor().equals("Red")){
+                if(board[rowInput1+1][colInput1-1] != null && board[rowInput1 + 1][colInput1 - 1].getColor().equals("Red")){
                     return true;
                 }
             }
