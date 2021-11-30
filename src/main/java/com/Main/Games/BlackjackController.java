@@ -124,7 +124,7 @@ public class BlackjackController extends MenuController {
         else
             winner("Player");
     }
-    public void displayPlayerCard(){
+    private void displayPlayerCard(){
         if(player.size() >= 1) {
             PlayerCard1.setVisible(true);
             PlayerNum1.setVisible(true);
@@ -165,12 +165,12 @@ public class BlackjackController extends MenuController {
         PlayerBottomNum.setX(25 * (player.size()-1));
     }
 
-    public void DrawDealer() {
+    private void DrawDealer() {
         Card temp = drawRandomCard();
         dealer.add(temp);
         displayDealerCard();
     }
-    public void displayDealerCard(){
+    private void displayDealerCard(){
         if(dealer.size() >= 1) {
             DealerCard1.setVisible(true);
             DealerText1.setVisible(true);
@@ -210,7 +210,7 @@ public class BlackjackController extends MenuController {
         DealerBottomNum.setX(25 * (dealer.size()-1));
     }
 
-    public void winner(String x){
+    private void winner(String x){
         if(x.equals("Dealer")){
             DrawButton.setVisible(false);
             StandButton.setVisible(false);
@@ -227,7 +227,7 @@ public class BlackjackController extends MenuController {
             WinnerText.setText("It's a Tie!");
         }
     }
-    public String returnNum(Card card){
+    private String returnNum(Card card){
         if(card.getNum() == 14)
             return "A";
         else if(card.getNum() == 13)
@@ -239,13 +239,13 @@ public class BlackjackController extends MenuController {
         else
            return "" + card.getNum();
     }
-    public Card drawRandomCard(){
+    private Card drawRandomCard(){
         int x  = (int) (Math.random() *deck.size());
         Card temp = deck.get(x);
         deck.remove(x);
         return temp;
     }
-    public int getTotal(ArrayList<Card> hand){
+    private int getTotal(ArrayList<Card> hand){
         int total = 0;
         //add up face cards and regular numbers
         for (Card card : hand) {
@@ -265,7 +265,7 @@ public class BlackjackController extends MenuController {
         }
         return total;
     }
-    public void hideAllCards(){
+    private void hideAllCards(){
         PlayerCard1.setVisible(false);
         PlayerCard2.setVisible(false);
         PlayerCard3.setVisible(false);
