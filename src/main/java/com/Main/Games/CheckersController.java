@@ -1,8 +1,7 @@
 package com.Main.Games;
 
-import javafx.event.ActionEvent;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
@@ -33,20 +32,11 @@ public class CheckersController {
     @FXML
     Circle Black1, Black2, Black3, Black4, Black5, Black6, Black7, Black8, Black9, Black10, Black11, Black12;
 
-    @FXML
-    Button  Button0, Button1, Button2, Button3, Button4, Button5, Button6, Button7, Button8, Button9, Button10,
-            Button11, Button12, Button13, Button14, Button15, Button16, Button17, Button18, Button19, Button20,
-            Button21, Button22, Button23, Button24, Button25, Button26, Button27, Button28, Button29, Button30,
-            Button31, Button32, Button33, Button34, Button35, Button36, Button37, Button38, Button39, Button40,
-            Button41, Button42, Button43, Button44, Button45, Button46, Button47, Button48, Button49, Button50,
-            Button51, Button52, Button53, Button54, Button55, Button56, Button57, Button58, Button59, Button60,
-            Button61, Button62, Button63;
-
-    int rowInput1 = -1;
-    int colInput1 = -1;
-    int rowInput2 = -1;
-    int colInput2 = -1;
-    Piece[][] MainBoard = new Piece[8][8];
+    private int rowInput1 = -1;
+    private int colInput1 = -1;
+    private int rowInput2 = -1;
+    private int colInput2 = -1;
+    private final Piece[][] MainBoard = new Piece[8][8];
 
 
     public void initialize(){
@@ -55,21 +45,32 @@ public class CheckersController {
     }
 
     private void crappyAi(){
-        Piece[][] tempBoard = new Piece[8][8];
-        ArrayList<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
-        ArrayList<int[]> allMovesRed = findAllRedMoves(MainBoard);
-        ArrayList<Double> scores = new ArrayList<>();
-
+        Task<Void> sleeper = new Task<>() {
+            @Override
+            protected Void call() throws InterruptedException {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        sleeper.setOnSucceeded(event -> {
+            Piece[][] tempBoard = new Piece[8][8];
+            ArrayList<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
+            //ArrayList<int[]> allMovesRed = findAllRedMoves(MainBoard);
+            ArrayList<Double> scores = new ArrayList<>();
+            int index = 0;
             for (int x = 0; x < allMovesBlack.size(); x++) {
                 allMovesBlack = findAllBlackMoves(MainBoard);
-                allMovesRed = findAllRedMoves(MainBoard);
-                equalsToMain(tempBoard);
+                //allMovesRed = findAllRedMoves(MainBoard);
+                copyMain(tempBoard);
                 movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
                 scores.add(x, evaluatePosition(tempBoard));
             }
             if (!allMovesBlack.isEmpty()) {
                 Double highest = scores.get(0);
-                int index = 0;
                 if(allMovesBlack.size() > 1) {
                     for (int x = 1; x < scores.size(); x++) {
                         if (scores.get(x) >= highest) {
@@ -79,7 +80,10 @@ public class CheckersController {
                     }
                 }
                 movePiece(MainBoard, allMovesBlack.get(index)[0], allMovesBlack.get(index)[1], allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]);
+
             }
+        });
+        new Thread(sleeper).start();
     }
     private double evaluatePosition(Piece[][] board){
         int[] scores = getScores(board);
@@ -106,9 +110,9 @@ public class CheckersController {
     //Used to calculate all possible moves for the bot
     private ArrayList<int[]> findAllBlackMoves(Piece[][] board){
         ArrayList<int[]> moves = new ArrayList<>();
-        int[] temp = new int[4];
         for(int x = 7 ; x > -1; x--){
             for(int y = 7; y > -1; y--){
+                int[] temp = new int[4];
                 if(board[x][y] != null && board[x][y].getColor().equals("Black")){
                     if(!board[x][y].isKing()){
                         if((x+1 <= 7) && (y-1 >= 0) && canMove(board, x,y,x+1, y-1)) {
@@ -342,17 +346,12 @@ public class CheckersController {
         }
         return new int[] {red, black};
     }
-    private void equalsToMain(Piece[][] tempBoard){
+    private void copyMain(Piece[][] tempBoard){
         for(int x = 0; x < 8; x++)
-            for(int y = 0; y < 8; y++)
-                tempBoard[x][y] = MainBoard[x][y];
+            System.arraycopy(MainBoard[x], 0, tempBoard[x], 0, 8);
     }
 
-    public void mouseClick(MouseEvent e){
-        int row = (int) e.getSceneY()/75;
-        int col = (int) e.getSceneX()/75;
-        move(row, col);
-    }
+
     private void move(int row, int column){
         if(rowInput1 == -1 && colInput1 == -1) {
             rowInput1 = row;
@@ -362,7 +361,7 @@ public class CheckersController {
                 colInput1 = -1;
             }
         }
-        else {
+        else if (rowInput1 != rowInput2 && colInput1 != colInput2){
             rowInput2 = row;
             colInput2 = column;
 
@@ -380,12 +379,27 @@ public class CheckersController {
             }
 
             displayBoard();
+            //if() {
+                if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                    crappyAi();
+                }
+            //}
             rowInput1 = -1;
             colInput1 = -1;
             rowInput2 = -1;
             colInput2 = -1;
-            crappyAi();
         }
+        else{
+            rowInput1 = -1;
+            colInput1 = -1;
+            rowInput2 = -1;
+            colInput2 = -1;
+        }
+    }
+    public void mouseClick(MouseEvent e){
+        int row = (int) e.getSceneY()/75;
+        int col = (int) e.getSceneX()/75;
+        move(row, col);
     }
     private boolean canMove(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2){
         //bound detection
@@ -413,16 +427,17 @@ public class CheckersController {
             else{
                 //Jumping Logic
                 if(rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2){
-                    return board[rowInput1 - 1][colInput1 + 1] != null;
+                    //Checks it isn't null and checks they aren't the same color
+                    return board[rowInput1 - 1][colInput1 + 1] != null && !board[rowInput1 - 1][colInput1 + 1].getColor().equals(board[rowInput1][colInput1].getColor());
                 }
                 else if(rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                    return board[rowInput1 - 1][colInput1 - 1] != null;
+                    return board[rowInput1 - 1][colInput1 - 1] != null && !board[rowInput1 - 1][colInput1 - 1].getColor().equals(board[rowInput1][colInput1].getColor());
                 }
                 else if(rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2){
-                    return board[rowInput1 + 1][colInput1 + 1] != null;
+                    return board[rowInput1 + 1][colInput1 + 1] != null && !board[rowInput1 + 1][colInput1 + 1].getColor().equals(board[rowInput1][colInput1].getColor());
                 }
                 else if(rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                    return board[rowInput1 + 1][colInput1 - 1] != null;
+                    return board[rowInput1 + 1][colInput1 - 1] != null && !board[rowInput1 + 1][colInput1 - 1].getColor().equals(board[rowInput1][colInput1].getColor());
                 }
             }
         }
@@ -480,6 +495,17 @@ public class CheckersController {
         board[row][column] = null;
         board[newRow][newCol] = temp;
         displayBoard();
+    }
+    public boolean canCapture(Piece[][] board, int row1, int col1){
+        if(row1+2 < 8 && col1+2 < 8 && canMove(board, row1, col1, row1+2, col1+2))
+            return true;
+        else if(row1+2 < 8 && col1-2 >= 0 && canMove(board, row1, col1, row1+2, col1-2))
+            return true;
+        else if(row1-2 >= 0 && col1+2 < 8 && canMove(board, row1, col1, row1-2, col1+2))
+            return true;
+        else if(row1-2 >= 0 && col1-2 >=0 && canMove(board, row1, col1, row1-2, col1-2))
+            return true;
+        return false;
     }
 
     private void displayBoard(){
