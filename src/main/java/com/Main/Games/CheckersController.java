@@ -1,14 +1,17 @@
 package com.Main.Games;
 
+import com.Main.MenuController;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CheckersController {
+public class CheckersController extends MenuController {
     private static class Piece{
         private final String color;
         private boolean isKing = false;
@@ -32,15 +35,21 @@ public class CheckersController {
 
     @FXML
     Circle Black1, Black2, Black3, Black4, Black5, Black6, Black7, Black8, Black9, Black10, Black11, Black12;
+    @FXML
+    AnchorPane popUp;
+    @FXML
+    Text finalText;
 
     private int rowInput1 = -1;
     private int colInput1 = -1;
     private int rowInput2 = -1;
     private int colInput2 = -1;
-    private final Piece[][] MainBoard = new Piece[8][8];
+    private Piece[][] MainBoard = new Piece[8][8];;
 
 
     public void initialize(){
+        MainBoard = new Piece[8][8];
+        popUp.setVisible(false);
         setStarterBoard();
         displayBoard();
     }
@@ -373,7 +382,29 @@ public class CheckersController {
             System.arraycopy(MainBoard[x], 0, tempBoard[x], 0, 8);
     }
 
-
+    private void checkWinner(){
+        ArrayList<int[]> blackMoves = findAllBlackMoves(MainBoard);
+        ArrayList<int[]> redMoves = findAllRedMoves(MainBoard);
+        int[] scores = getScores(MainBoard);
+        if(scores[0] == 0){
+            winner("B");
+        }
+        else if (scores[1] == 0){
+            winner("R");
+        }
+        else if(blackMoves.isEmpty() && redMoves.isEmpty()){
+            winner("T");
+        }
+    }
+    private void winner(String s){
+        popUp.setVisible(true);
+        if(s.equals("T")){
+            finalText.setText("Tie!");
+        }
+        else if (s.equals("B")){
+            finalText.setText("You Lose!");
+        }
+    }
     private void move(int row, int column){
         if(rowInput1 == -1 && colInput1 == -1) {
             rowInput1 = row;
@@ -413,6 +444,8 @@ public class CheckersController {
             colInput1 = -1;
             rowInput2 = -1;
             colInput2 = -1;
+
+            checkWinner();
         }
         else{
             rowInput1 = -1;
