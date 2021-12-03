@@ -6,6 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CheckersController {
     private static class Piece{
@@ -71,16 +72,24 @@ public class CheckersController {
             }
             if (!allMovesBlack.isEmpty()) {
                 Double highest = scores.get(0);
+                Double lowest = scores.get(0);
                 if(allMovesBlack.size() > 1) {
                     for (int x = 1; x < scores.size(); x++) {
                         if (scores.get(x) >= highest) {
                             highest = scores.get(x);
                             index = x;
                         }
+                        else if(scores.get(x) < lowest){
+                            lowest = scores.get(x);
+                        }
                     }
                 }
+                if(Objects.equals(highest, lowest)){
+                    index = (int) (Math.random() * allMovesBlack.size());
+                }
                 movePiece(MainBoard, allMovesBlack.get(index)[0], allMovesBlack.get(index)[1], allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]);
-
+                if(allMovesBlack.get(index)[2] == 7)
+                    MainBoard[allMovesBlack.get(index)[2]][allMovesBlack.get(index)[3]].upgradeToKing();
             }
         });
         new Thread(sleeper).start();
@@ -102,7 +111,7 @@ public class CheckersController {
         if(scores[0] > scores[1])
             positionScoreForBlack--;
         else if(scores[0] < scores[1])
-            positionScoreForBlack--;
+            positionScoreForBlack++;
 
         return positionScoreForBlack;
     }
@@ -114,6 +123,7 @@ public class CheckersController {
             for(int y = 7; y > -1; y--){
                 int[] temp = new int[4];
                 if(board[x][y] != null && board[x][y].getColor().equals("Black")){
+                    //regular pieces
                     if(!board[x][y].isKing()){
                         if((x+1 <= 7) && (y-1 >= 0) && canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
@@ -121,6 +131,7 @@ public class CheckersController {
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x+1 <= 7) && (y+1 <= 7) && canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
@@ -128,6 +139,7 @@ public class CheckersController {
                             temp[2] = x+1;
                             temp[3] = y+1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         //Jumping
                         if((x+2 <= 7) && (y-2 >= 0) && canMove(board, x,y,x+2, y-2)) {
@@ -136,6 +148,7 @@ public class CheckersController {
                             temp[2] = x+2;
                             temp[3] = y-2;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x+2 <= 7) && (y+2 <= 7) && canMove(board, x,y,x+2, y+2)) {
                             temp[0] = x;
@@ -143,8 +156,10 @@ public class CheckersController {
                             temp[2] = x+2;
                             temp[3] = y+2;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                     }
+                    //kings
                     else {
                         if((x+1 <= 7) && (y-1 >= 0) && canMove(board, x,y,x+1, y-1)) {
                             temp[0] = x;
@@ -152,6 +167,7 @@ public class CheckersController {
                             temp[2] = x+1;
                             temp[3] = y-1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x+1 <= 7) && (y+1 <= 7) && canMove(board, x,y,x+1, y+1)) {
                             temp[0] = x;
@@ -159,6 +175,7 @@ public class CheckersController {
                             temp[2] = x+1;
                             temp[3] = y+1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x-1 >= 0) && (y-1 >= 0) && canMove(board, x,y,x-1, y-1)) {
                             temp[0] = x;
@@ -166,6 +183,7 @@ public class CheckersController {
                             temp[2] = x-1;
                             temp[3] = y-1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x-1 >= 0) && (y+1 <= 7) && canMove(board, x,y,x-1, y+1)) {
                             temp[0] = x;
@@ -173,6 +191,7 @@ public class CheckersController {
                             temp[2] = x-1;
                             temp[3] = y+1;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         //jumping
                         if((x+2 <= 7) && (y-2 >= 0) && canMove(board, x,y,x+2, y-2)) {
@@ -181,6 +200,7 @@ public class CheckersController {
                             temp[2] = x+2;
                             temp[3] = y-2;
                             moves.add(temp);
+                            temp = new int[4];
                         }
                         if((x+2 <= 7) && (y+2 <= 7) && canMove(board, x,y,x+2, y+2)) {
                             temp[0] = x;
@@ -188,15 +208,17 @@ public class CheckersController {
                             temp[2] = x+2;
                             temp[3] = y+2;
                             moves.add(temp);
+                            temp = new int[4];
                         }
-                        if((x-2 <= 7) && (y-2 >= 0) && canMove(board, x,y,x+2, y-2)) {
+                        if((x-2 >= 0) && (y-2 >= 0) && canMove(board, x,y,x-2, y-2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
                             temp[3] = y-2;
                             moves.add(temp);
+                            temp = new int[4];
                         }
-                        if((x-2 <= 7) && (y+2 <= 7) && canMove(board, x,y,x+2, y+2)) {
+                        if((x-2 >= 0) && (y+2 <= 7) && canMove(board, x,y,x-2, y+2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
@@ -379,11 +401,14 @@ public class CheckersController {
             }
 
             displayBoard();
-            //if() {
+            if(((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
                 if (!canCapture(MainBoard, rowInput2, colInput2)) {
                     crappyAi();
                 }
-            //}
+            }
+            else{
+                crappyAi();
+            }
             rowInput1 = -1;
             colInput1 = -1;
             rowInput2 = -1;
@@ -402,7 +427,7 @@ public class CheckersController {
         move(row, col);
     }
     private boolean canMove(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2){
-        //bound detection
+        //bounds detection
         if((rowInput1 < 0 || colInput1 > 7) || (rowInput2 < 0 ||colInput2 > 7))
             return false;
         //protecting from nulls
@@ -410,7 +435,7 @@ public class CheckersController {
             return false;
         else if(board[rowInput2][colInput2] != null)
             return false;
-        //logic for king (board[rowInput1-1][colInput1+1] == null)
+        //logic for king
         else if(board[rowInput1][colInput1].isKing()){
             if (rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1-1][colInput1+1] == null)) {
                 return true;
