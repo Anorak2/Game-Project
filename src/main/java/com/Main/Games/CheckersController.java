@@ -36,6 +36,9 @@ public class CheckersController extends MenuController {
     @FXML
     Circle Black1, Black2, Black3, Black4, Black5, Black6, Black7, Black8, Black9, Black10, Black11, Black12;
     @FXML
+    Text king1, king2, king3, king4, king5, king6, king7, king8, king9, king10, king11, king12, king13,
+            king14, king15, king16, king17, king18, king19, king20, king21, king22, king23, king24;
+    @FXML
     AnchorPane popUp;
     @FXML
     Text finalText;
@@ -44,11 +47,13 @@ public class CheckersController extends MenuController {
     private int colInput1 = -1;
     private int rowInput2 = -1;
     private int colInput2 = -1;
-    private Piece[][] MainBoard = new Piece[8][8];;
+    private Piece[][] MainBoard = new Piece[8][8];
+    boolean lockmove = false;
 
 
     public void initialize(){
         MainBoard = new Piece[8][8];
+        lockmove = false;
         popUp.setVisible(false);
         setStarterBoard();
         displayBoard();
@@ -106,10 +111,13 @@ public class CheckersController extends MenuController {
                 if     ((allMovesBlack.get(index)[0] + 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] + 2 == allMovesBlack.get(index)[3]) ||
                         (allMovesBlack.get(index)[0] + 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] - 2 == allMovesBlack.get(index)[3]) ||
                         (allMovesBlack.get(index)[0] - 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] + 2 == allMovesBlack.get(index)[3]) ||
-                        (allMovesBlack.get(index)[0] - 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] - 2 == allMovesBlack.get(index)[3]))
-                    if(canCapture(MainBoard, allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]))
+                        (allMovesBlack.get(index)[0] - 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] - 2 == allMovesBlack.get(index)[3])) {
+                    if (canCapture(MainBoard, allMovesBlack.get(index)[2], allMovesBlack.get(index)[3])) {
                         crappyAi();
+                    }
+                }
             }
+            checkWinner();
         });
         new Thread(sleeper).start();
     }
@@ -257,14 +265,14 @@ public class CheckersController extends MenuController {
             for(int y = 7; y > -1; y--){
                 if(board[x][y] != null && board[x][y].getColor().equals("Red")){
                     if(!board[x][y].isKing()){
-                        if((x-1 <= 7) && (y-1 >= 0) && canMove(board, x,y,x-1, y-1)) {
+                        if((x-1 >= 0) && (y-1 >= 0) && canMove(board, x,y,x-1, y-1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
                             temp[3] = y-1;
                             moves.add(temp);
                         }
-                        if((x-1 <= 7) && (y+1 <= 7) && canMove(board, x,y,x-1, y+1)) {
+                        if((x-1 >= 0) && (y+1 <= 7) && canMove(board, x,y,x-1, y+1)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-1;
@@ -272,14 +280,14 @@ public class CheckersController extends MenuController {
                             moves.add(temp);
                         }
                         //Jumping
-                        if((x-2 <= 7) && (y-2 >= 0) && canMove(board, x,y,x-2, y-2)) {
+                        if((x-2 >= 0) && (y-2 >= 0) && canMove(board, x,y,x-2, y-2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
                             temp[3] = y-2;
                             moves.add(temp);
                         }
-                        if((x-2 <= 7) && (y+2 <= 7) && canMove(board, x,y,x-2, y+2)) {
+                        if((x-2 >= 7) && (y+2 <= 7) && canMove(board, x,y,x-2, y+2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
@@ -331,14 +339,14 @@ public class CheckersController extends MenuController {
                             temp[3] = y+2;
                             moves.add(temp);
                         }
-                        if((x-2 <= 7) && (y-2 >= 0) && canMove(board, x,y,x+2, y-2)) {
+                        if((x-2 >= 0) && (y-2 >= 0) && canMove(board, x,y,x-2, y-2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
                             temp[3] = y-2;
                             moves.add(temp);
                         }
-                        if((x-2 <= 7) && (y+2 <= 7) && canMove(board, x,y,x+2, y+2)) {
+                        if((x-2 >= 0) && (y+2 <= 7) && canMove(board, x,y,x-2, y+2)) {
                             temp[0] = x;
                             temp[1] = y;
                             temp[2] = x-2;
@@ -408,6 +416,7 @@ public class CheckersController extends MenuController {
     }
     private void winner(String s){
         popUp.setVisible(true);
+        lockmove = true;
         if(s.equals("T")){
             finalText.setText("Tie!");
         }
@@ -416,52 +425,52 @@ public class CheckersController extends MenuController {
         }
     }
     private void move(int row, int column){
-        if(rowInput1 == -1 && colInput1 == -1) {
-            rowInput1 = row;
-            colInput1 = column;
-            if(MainBoard[rowInput1][colInput1] == null){
-                rowInput1 = -1;
-                colInput1 = -1;
-            }
-        }
-        else {
-            rowInput2 = row;
-            colInput2 = column;
-            
-            if (rowInput1 != rowInput2 && colInput1 != colInput2) {
-                if (canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
-                    movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
-                    //Promoting
-                    if (MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
-                        if (rowInput2 == 0)
-                            MainBoard[rowInput2][colInput2].upgradeToKing();
-                    } else {
-                        if (rowInput2 == 7)
-                            MainBoard[rowInput2][colInput2].upgradeToKing();
-                    }
+        if(!lockmove) {
+            if (rowInput1 == -1 && colInput1 == -1) {
+                rowInput1 = row;
+                colInput1 = column;
+                if (MainBoard[rowInput1][colInput1] == null) {
+                    rowInput1 = -1;
+                    colInput1 = -1;
                 }
+            } else {
+                rowInput2 = row;
+                colInput2 = column;
 
-                displayBoard();
-                if (((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
-                    if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                if (rowInput1 != rowInput2 && colInput1 != colInput2) {
+                    if (canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
+                        movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
+                        //Promoting
+                        if (MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
+                            if (rowInput2 == 0)
+                                MainBoard[rowInput2][colInput2].upgradeToKing();
+                        } else {
+                            if (rowInput2 == 7)
+                                MainBoard[rowInput2][colInput2].upgradeToKing();
+                        }
+                    }
+
+                    displayBoard();
+                    if (((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
+                        if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                            crappyAi();
+                        }
+                    } else {
                         crappyAi();
                     }
+                    rowInput1 = -1;
+                    colInput1 = -1;
+                    rowInput2 = -1;
+                    colInput2 = -1;
                 } else {
-                    crappyAi();
+                    rowInput1 = -1;
+                    colInput1 = -1;
+                    rowInput2 = -1;
+                    colInput2 = -1;
                 }
-                rowInput1 = -1;
-                colInput1 = -1;
-                rowInput2 = -1;
-                colInput2 = -1;
-
-                checkWinner();
-            } else {
-                rowInput1 = -1;
-                colInput1 = -1;
-                rowInput2 = -1;
-                colInput2 = -1;
             }
         }
+        checkWinner();
     }
     public void mouseClick(MouseEvent e){
         int row = (int) e.getSceneY()/75;
@@ -587,61 +596,121 @@ public class CheckersController extends MenuController {
                         Red1.setCenterX((col * 75) + 37.5);
                         Red1.setCenterY((row * 75) + 37.5);
                         Red1.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king1.setX(col*75) ;
+                            king1.setY(row*75);
+                            king1.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 2) {
                         Red2.setCenterX((col * 75) + 37.5);
                         Red2.setCenterY((row * 75) + 37.5);
                         Red2.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king2.setX(col*75) ;
+                            king2.setY(row*75);
+                            king2.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 3) {
                         Red3.setCenterX((col * 75) + 37.5);
                         Red3.setCenterY((row * 75) + 37.5);
                         Red3.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king3.setX(col*75) ;
+                            king3.setY(row*75);
+                            king3.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 4) {
                         Red4.setCenterX((col * 75) + 37.5);
                         Red4.setCenterY((row * 75) + 37.5);
                         Red4.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king4.setX(col*75) ;
+                            king4.setY(row*75);
+                            king4.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 5) {
                         Red5.setCenterX((col * 75) + 37.5);
                         Red5.setCenterY((row * 75) + 37.5);
                         Red5.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king5.setX(col*75) ;
+                            king5.setY(row*75);
+                            king5.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 6) {
                         Red6.setCenterX((col * 75) + 37.5);
                         Red6.setCenterY((row * 75) + 37.5);
                         Red6.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king6.setX(col*75) ;
+                            king6.setY(row*75);
+                            king6.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 7) {
                         Red7.setCenterX((col * 75) + 37.5);
                         Red7.setCenterY((row * 75) + 37.5);
                         Red7.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king7.setX(col*75) ;
+                            king7.setY(row*75);
+                            king7.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 8) {
                         Red8.setCenterX((col * 75) + 37.5);
                         Red8.setCenterY((row * 75) + 37.5);
                         Red8.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king8.setX(col*75) ;
+                            king8.setY(row*75);
+                            king8.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 9) {
                         Red9.setCenterX((col * 75) + 37.5);
                         Red9.setCenterY((row * 75) + 37.5);
                         Red9.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king9.setX(col*75) ;
+                            king9.setY(row*75);
+                            king9.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 10) {
                         Red10.setCenterX((col * 75) + 37.5);
                         Red10.setCenterY((row * 75) + 37.5);
                         Red10.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king10.setX(col*75) ;
+                            king10.setY(row*75);
+                            king10.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 11) {
                         Red11.setCenterX((col * 75) + 37.5);
                         Red11.setCenterY((row * 75) + 37.5);
                         Red11.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king11.setX(col*75) ;
+                            king11.setY(row*75);
+                            king11.setVisible(true);
+                        }
                     }
                     else if(numRedMoved == 12) {
                         Red12.setCenterX((col * 75) + 37.5);
                         Red12.setCenterY((row * 75) + 37.5);
                         Red12.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king12.setX(col*75) ;
+                            king12.setY(row*75);
+                            king12.setVisible(true);
+                        }
                     }
                     numRedMoved++;
                 }
@@ -650,68 +719,128 @@ public class CheckersController extends MenuController {
                         Black1.setCenterX((col * 75) + 37.5);
                         Black1.setCenterY((row * 75) + 37.5);
                         Black1.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king13.setX(col*75) ;
+                            king13.setY(row*75);
+                            king13.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 2) {
                         Black2.setCenterX((col * 75) + 37.5);
                         Black2.setCenterY((row * 75) + 37.5);
                         Black2.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king14.setX(col*75) ;
+                            king14.setY(row*75);
+                            king14.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 3) {
                         Black3.setCenterX((col * 75) + 37.5);
                         Black3.setCenterY((row * 75) + 37.5);
                         Black3.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king15.setX(col*75) ;
+                            king15.setY(row*75);
+                            king15.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 4) {
                         Black4.setCenterX((col * 75) + 37.5);
                         Black4.setCenterY((row * 75) + 37.5);
                         Black4.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king16.setX(col*75) ;
+                            king16.setY(row*75);
+                            king16.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 5) {
                         Black5.setCenterX((col * 75) + 37.5);
                         Black5.setCenterY((row * 75) + 37.5);
                         Black5.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king17.setX(col*75) ;
+                            king17.setY(row*75);
+                            king17.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 6) {
                         Black6.setCenterX((col * 75) + 37.5);
                         Black6.setCenterY((row * 75) + 37.5);
                         Black6.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king18.setX(col*75);
+                            king18.setY(row*75);
+                            king18.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 7) {
                         Black7.setCenterX((col * 75) + 37.5);
                         Black7.setCenterY((row * 75) + 37.5);
                         Black7.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king19.setX(col*75) ;
+                            king19.setY(row*75);
+                            king19.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 8) {
                         Black8.setCenterX((col * 75) + 37.5);
                         Black8.setCenterY((row * 75) + 37.5);
                         Black8.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king20.setX(col*75) ;
+                            king20.setY(row*75);
+                            king20.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 9) {
                         Black9.setCenterX((col * 75) + 37.5);
                         Black9.setCenterY((row * 75) + 37.5);
                         Black9.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king21.setX(col*75) ;
+                            king21.setY(row*75);
+                            king21.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 10) {
                         Black10.setCenterX((col * 75) + 37.5);
                         Black10.setCenterY((row * 75) + 37.5);
                         Black10.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king22.setX(col*75) ;
+                            king22.setY(row*75);
+                            king22.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 11) {
                         Black11.setCenterX((col * 75) + 37.5);
                         Black11.setCenterY((row * 75) + 37.5);
                         Black11.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king23.setX(col*75) ;
+                            king23.setY(row*75);
+                            king23.setVisible(true);
+                        }
                     }
                     else if(numBlackMoved == 12) {
                         Black12.setCenterX((col * 75) + 37.5);
                         Black12.setCenterY((row * 75) + 37.5);
                         Black12.setVisible(true);
+                        if(MainBoard[row][col].isKing()){
+                            king24.setX(col*75) ;
+                            king24.setY(row*75);
+                            king24.setVisible(true);
+                        }
                     }
                     numBlackMoved++;
                 }
             }
         }
     }
-    private void setStarterBoard(){
+    private void setStarterBoard() {
         MainBoard[7][0] = new Piece("Red");
         MainBoard[7][2] = new Piece("Red");
         MainBoard[7][4] = new Piece("Red");
@@ -752,6 +881,19 @@ public class CheckersController extends MenuController {
             Red10.setVisible(false);
             Red11.setVisible(false);
             Red12.setVisible(false);
+
+            king1.setVisible(false);
+            king2.setVisible(false);
+            king3.setVisible(false);
+            king4.setVisible(false);
+            king5.setVisible(false);
+            king6.setVisible(false);
+            king7.setVisible(false);
+            king8.setVisible(false);
+            king9.setVisible(false);
+            king10.setVisible(false);
+            king11.setVisible(false);
+            king12.setVisible(false);
         }
         else if(s.equals("Black")) {
             Black1.setVisible(false);
@@ -766,6 +908,19 @@ public class CheckersController extends MenuController {
             Black10.setVisible(false);
             Black11.setVisible(false);
             Black12.setVisible(false);
+
+            king13.setVisible(false);
+            king14.setVisible(false);
+            king15.setVisible(false);
+            king16.setVisible(false);
+            king17.setVisible(false);
+            king18.setVisible(false);
+            king19.setVisible(false);
+            king20.setVisible(false);
+            king21.setVisible(false);
+            king22.setVisible(false);
+            king23.setVisible(false);
+            king24.setVisible(false);
         }
     }
 }

@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.CheckersController">
@@ -69,39 +70,137 @@
 
             </children>
         </GridPane>
-      <Circle fx:id="Red1" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red2" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red3" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red4" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red5" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red6" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red7" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red8" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red9" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red10" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red11" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Red12" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black1" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black2" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black3" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black4" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black5" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black6" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black7" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black8" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black9" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black10" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black11" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="Black12" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red1" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red2" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red3" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red4" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red5" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red6" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red7" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red8" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red9" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red10" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red11" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Red12" centerX="37.5" centerY="37.5" fill="RED" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black1" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black2" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black3" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black4" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black5" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black6" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black7" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black8" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black9" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black10" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black11" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Circle fx:id="Black12" centerX="37.5" centerY="112.0" radius="37.5" stroke="BLACK" strokeType="INSIDE" />
+        <Text fx:id="king1" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king2" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king3" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king4" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king5" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king6" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king7" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king8" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king9" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king10" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king11" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king12" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king13" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king14" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king15" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king16" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king17" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king18" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king19" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king20" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king21" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king22" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king23" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
+         <font>
+            <Font size="30.0" />
+         </font></Text>
+        <Text fx:id="king24" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
 
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" onMouseClicked="#mouseClick" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="600.0" />
-      <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dec9af" height="100.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-            <Text fx:id="finalText" layoutX="75.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You Win!" />
-            <Button layoutX="25.0" layoutY="50.0" mnemonicParsing="false" onAction="#Initialize" text="Again" />
-            <Button layoutX="124.0" layoutY="50.0" mnemonicParsing="false" onAction="#swapToMenu" text="Menu" />
-         </children>
-      </AnchorPane>
+
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Text>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" onMouseClicked="#mouseClick" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="600.0" />
+        <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dec9af" height="100.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                <Text fx:id="finalText" layoutX="75.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You Win!" />
+                <Button layoutX="25.0" layoutY="50.0" mnemonicParsing="false" onAction="#initialize" text="Again" />
+                <Button layoutX="124.0" layoutY="50.0" mnemonicParsing="false" onAction="#swapToMenu" text="Menu" />
+            </children>
+        </AnchorPane>
     </children>
 </AnchorPane>

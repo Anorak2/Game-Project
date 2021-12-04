@@ -1,11 +1,15 @@
 package com.Main.Games;
 
 import com.Main.MenuController;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BlackjackController extends MenuController {
     private static class Card implements Comparable<Card>{
@@ -239,7 +243,7 @@ public class BlackjackController extends MenuController {
         else
            return "" + card.getNum();
     }
-    private Card drawRandomCard(){
+    protected Card drawRandomCard(){
         int x  = (int) (Math.random() *deck.size());
         Card temp = deck.get(x);
         deck.remove(x);
