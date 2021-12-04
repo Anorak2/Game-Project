@@ -57,7 +57,7 @@ public class CheckersController extends MenuController {
     private void crappyAi(){
         Task<Void> sleeper = new Task<>() {
             @Override
-            protected Void call() throws InterruptedException {
+            protected Void call() {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -97,8 +97,18 @@ public class CheckersController extends MenuController {
                     index = (int) (Math.random() * allMovesBlack.size());
                 }
                 movePiece(MainBoard, allMovesBlack.get(index)[0], allMovesBlack.get(index)[1], allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]);
+
+                //Promotion
                 if(allMovesBlack.get(index)[2] == 7)
                     MainBoard[allMovesBlack.get(index)[2]][allMovesBlack.get(index)[3]].upgradeToKing();
+
+                //Recursion for multi jump
+                if     ((allMovesBlack.get(index)[0] + 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] + 2 == allMovesBlack.get(index)[3]) ||
+                        (allMovesBlack.get(index)[0] + 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] - 2 == allMovesBlack.get(index)[3]) ||
+                        (allMovesBlack.get(index)[0] - 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] + 2 == allMovesBlack.get(index)[3]) ||
+                        (allMovesBlack.get(index)[0] - 2 == allMovesBlack.get(index)[2] && allMovesBlack.get(index)[1] - 2 == allMovesBlack.get(index)[3]))
+                    if(canCapture(MainBoard, allMovesBlack.get(index)[2], allMovesBlack.get(index)[3]))
+                        crappyAi();
             }
         });
         new Thread(sleeper).start();
@@ -414,44 +424,43 @@ public class CheckersController extends MenuController {
                 colInput1 = -1;
             }
         }
-        else if (rowInput1 != rowInput2 && colInput1 != colInput2){
+        else {
             rowInput2 = row;
             colInput2 = column;
-
-            if(canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
-                movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
-                //Promoting
-                if(MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
-                    if(rowInput2 == 0)
-                        MainBoard[rowInput2][colInput2].upgradeToKing();
+            
+            if (rowInput1 != rowInput2 && colInput1 != colInput2) {
+                if (canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
+                    movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
+                    //Promoting
+                    if (MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
+                        if (rowInput2 == 0)
+                            MainBoard[rowInput2][colInput2].upgradeToKing();
+                    } else {
+                        if (rowInput2 == 7)
+                            MainBoard[rowInput2][colInput2].upgradeToKing();
+                    }
                 }
-                else{
-                    if(rowInput2 == 7)
-                        MainBoard[rowInput2][colInput2].upgradeToKing();
-                }
-            }
 
-            displayBoard();
-            if(((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
-                if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                displayBoard();
+                if (((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
+                    if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                        crappyAi();
+                    }
+                } else {
                     crappyAi();
                 }
-            }
-            else{
-                crappyAi();
-            }
-            rowInput1 = -1;
-            colInput1 = -1;
-            rowInput2 = -1;
-            colInput2 = -1;
+                rowInput1 = -1;
+                colInput1 = -1;
+                rowInput2 = -1;
+                colInput2 = -1;
 
-            checkWinner();
-        }
-        else{
-            rowInput1 = -1;
-            colInput1 = -1;
-            rowInput2 = -1;
-            colInput2 = -1;
+                checkWinner();
+            } else {
+                rowInput1 = -1;
+                colInput1 = -1;
+                rowInput2 = -1;
+                colInput2 = -1;
+            }
         }
     }
     public void mouseClick(MouseEvent e){
