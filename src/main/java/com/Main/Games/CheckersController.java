@@ -404,10 +404,10 @@ public class CheckersController extends MenuController {
         ArrayList<int[]> blackMoves = findAllBlackMoves(MainBoard);
         ArrayList<int[]> redMoves = findAllRedMoves(MainBoard);
         int[] scores = getScores(MainBoard);
-        if(scores[0] == 0){
+        if(scores[0] == 0 || !blackMoves.isEmpty() && redMoves.isEmpty()){
             winner("B");
         }
-        else if (scores[1] == 0){
+        else if (scores[1] == 0 || blackMoves.isEmpty() && !redMoves.isEmpty()){
             winner("R");
         }
         else if(blackMoves.isEmpty() && redMoves.isEmpty()){
@@ -436,10 +436,12 @@ public class CheckersController extends MenuController {
             } else {
                 rowInput2 = row;
                 colInput2 = column;
+                boolean moved = false;
 
-                if (rowInput1 != rowInput2 && colInput1 != colInput2) {
+                if (rowInput1 != rowInput2 && colInput1 != colInput2 && MainBoard[rowInput1][colInput1].getColor().equals("Red")) {
                     if (canMove(MainBoard, rowInput1, colInput1, rowInput2, colInput2)) {
                         movePiece(MainBoard, rowInput1, colInput1, rowInput2, colInput2);
+                        moved=true;
                         //Promoting
                         if (MainBoard[rowInput2][colInput2].getColor().equals("Red")) {
                             if (rowInput2 == 0)
@@ -452,10 +454,10 @@ public class CheckersController extends MenuController {
 
                     displayBoard();
                     if (((rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 + 2 == colInput2) || (rowInput1 - 2 == rowInput2 && colInput1 - 2 == colInput2))) {
-                        if (!canCapture(MainBoard, rowInput2, colInput2)) {
+                        if (!canCapture(MainBoard, rowInput2, colInput2) && moved) {
                             crappyAi();
                         }
-                    } else {
+                    } else if (moved){
                         crappyAi();
                     }
                     rowInput1 = -1;

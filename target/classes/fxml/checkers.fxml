@@ -187,12 +187,11 @@
             <Font size="30.0" />
          </font></Text>
         <Text fx:id="king24" fill="WHITE" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
-
-
             <font>
                 <Font size="30.0" />
             </font>
         </Text>
+
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" onMouseClicked="#mouseClick" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="600.0" />
         <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0">
             <children>
