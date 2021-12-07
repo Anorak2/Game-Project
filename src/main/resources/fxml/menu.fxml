@@ -12,6 +12,7 @@
                <children>
                   <Button mnemonicParsing="false" onAction="#swapToBlackjack" prefHeight="60.0" prefWidth="190.0" style="-fx-background-color: #838383; -fx-border-width: 1;" text="Blackjack" />
                   <Button layoutY="61.0" mnemonicParsing="false" onAction="#swapToCheckers" prefHeight="60.0" prefWidth="190.0" style="-fx-background-color: #838383; -fx-border-width: 1;" text="Checkers" />
+                  <Button layoutY="122.0" mnemonicParsing="false" onAction="#swapToMinesweeeper" prefHeight="60.0" prefWidth="190.0" style="-fx-background-color: #838383; -fx-border-width: 1;" text="MineSweeper" />
                </children>
             </AnchorPane>
          </content></ScrollPane>

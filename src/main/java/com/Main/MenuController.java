@@ -38,4 +38,12 @@ public class MenuController {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void swapToMinesweeeper(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/minesweeper.fxml")));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }
