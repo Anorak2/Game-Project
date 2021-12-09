@@ -1,15 +1,20 @@
 package com.Main.Games;
 
 import com.Main.MenuController;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
+import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Objects;
+
 
 public class BlackjackController extends MenuController {
     private static class Card implements Comparable<Card>{
@@ -36,6 +41,7 @@ public class BlackjackController extends MenuController {
         }
     }
 
+
     @FXML
     Button DrawButton;
     @FXML
@@ -52,6 +58,8 @@ public class BlackjackController extends MenuController {
     Text DealerText1, DealerText2, DealerText3, DealerText4, DealerText5, DealerText6, DealerText7;
     @FXML
     Text PlayerBottomNum, DealerBottomNum;
+    @FXML
+    AnchorPane AnchorPane;
 
     ArrayList<Card> deck = new ArrayList<>();
     ArrayList<Card> player = new ArrayList<>();
@@ -129,88 +137,108 @@ public class BlackjackController extends MenuController {
             winner("Player");
     }
     private void displayPlayerCard(){
-        if(player.size() >= 1) {
-            PlayerCard1.setVisible(true);
-            PlayerNum1.setVisible(true);
-            PlayerNum1.setText(returnNum(player.get(0)));
-            PlayerBottomNum.setVisible(true);
+        Rectangle[] PlayerCard = {PlayerCard1, PlayerCard2, PlayerCard3, PlayerCard4, PlayerCard5, PlayerCard6, PlayerCard7};
+        Text[] PlayerNum = {PlayerNum1, PlayerNum2,  PlayerNum3,  PlayerNum4,  PlayerNum5,  PlayerNum6,  PlayerNum7};
+        Card temp;
+        for(int x = 0; x < player.size(); x++){
+            temp = player.get(x);
+            PlayerCard[x].setVisible(true);
+            PlayerNum[x].setVisible(true);
+            PlayerNum[x].setText(returnNum(temp));
+            PlayerBottomNum.setText(returnNum(temp));
+
+            colorTheNums(x, true);
         }
-        if(player.size() >= 2) {
-            PlayerCard2.setVisible(true);
-            PlayerNum2.setVisible(true);
-            PlayerNum2.setText(returnNum(player.get(1)));
-        }
-        if(player.size() >= 3) {
-            PlayerCard3.setVisible(true);
-            PlayerNum3.setVisible(true);
-            PlayerNum3.setText(returnNum(player.get(2)));
-        }
-        if(player.size() >= 4) {
-            PlayerCard4.setVisible(true);
-            PlayerNum4.setVisible(true);
-            PlayerNum4.setText(returnNum(player.get(3)));
-        }
-        if(player.size() >= 5) {
-            PlayerCard5.setVisible(true);
-            PlayerNum5.setVisible(true);
-            PlayerNum5.setText(returnNum(player.get(4)));
-        }
-        if(player.size() >= 6) {
-            PlayerCard6.setVisible(true);
-            PlayerNum6.setVisible(true);
-            PlayerNum6.setText(returnNum(player.get(5)));
-        }
-        if(player.size() >= 7) {
-            PlayerCard7.setVisible(true);
-            PlayerNum7.setVisible(true);
-            PlayerNum7.setText(returnNum(player.get(6)));
-        }
-        PlayerBottomNum.setText(returnNum(player.get(player.size()-1)));
+        PlayerBottomNum.setVisible(true);
         PlayerBottomNum.setX(25 * (player.size()-1));
     }
+    private ImageView PlayerBot;
+    private ImageView DealerBot;
+    private void colorTheNums(int x, Boolean isPlayer){
+        try {
+            if (isPlayer) {
+                FileInputStream inputstream;
 
+                if (player.get(x).getSuite().equals("Diamond"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Diamond.png");
+                else if ( player.get(x).getSuite().equals("Heart"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Heart.png");
+                else if (player.get(x).getSuite().equals("Club"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Club.png");
+                else
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Spade.png");
+
+
+                Image image = new Image(inputstream);
+                ImageView tempImage = new ImageView();
+                tempImage.setImage(image);
+                tempImage.setFitHeight(20);
+                tempImage.setFitWidth(20);
+                tempImage.setX(242 + (25 * (player.size()-1)));
+                tempImage.setY(215);
+                PlayerBot = tempImage;
+
+                ObservableList<Node> childrens = AnchorPane.getChildren();
+                for (Node node : childrens) {
+                    if (node instanceof ImageView && !node.equals(DealerBot))
+                        node.setVisible(false);
+                }
+                AnchorPane.getChildren().add(tempImage);
+
+            } else {
+                FileInputStream inputstream;
+
+                if (dealer.get(x).getSuite().equals("Diamond"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Diamond.png");
+                else if (dealer.get(x).getSuite().equals("Heart"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Heart.png");
+                else if (dealer.get(x).getSuite().equals("Club"))
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Club.png");
+                else
+                    inputstream = new FileInputStream("src/main/resources/fxml/images/Spade.png");
+
+                Image image = new Image(inputstream);
+                ImageView tempImage = new ImageView();
+                tempImage.setImage(image);
+                tempImage.setFitHeight(20);
+                tempImage.setFitWidth(20);
+                tempImage.setX(242 + (25 * (dealer.size()-1)));
+                tempImage.setY(80);
+                DealerBot = tempImage;
+
+                ObservableList<Node> childrens = AnchorPane.getChildren();
+                for (Node node : childrens) {
+                    if (node instanceof ImageView && !node.equals(PlayerBot))
+                        node.setVisible(false);
+                }
+                AnchorPane.getChildren().add(tempImage);
+
+            }
+
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     private void DrawDealer() {
         Card temp = drawRandomCard();
         dealer.add(temp);
         displayDealerCard();
     }
     private void displayDealerCard(){
-        if(dealer.size() >= 1) {
-            DealerCard1.setVisible(true);
-            DealerText1.setVisible(true);
-            DealerText1.setText(returnNum(dealer.get(0)));
+        Rectangle[] DealerCard = {DealerCard1, DealerCard2, DealerCard3, DealerCard4, DealerCard5, DealerCard6, DealerCard7};
+        Text[] DealerText = {DealerText1, DealerText2,  DealerText3,  DealerText4,  DealerText5,  DealerText6,  DealerText7};
+
+        for(int x = 0; x < dealer.size(); x++){
+            DealerCard[x].setVisible(true);
+            DealerText[x].setVisible(true);
+            DealerText[x].setText(returnNum(dealer.get(x)));
+            DealerBottomNum.setText(returnNum(dealer.get(x)));
+
+            colorTheNums(x, false);
         }
-        if(dealer.size() >= 2) {
-            DealerCard2.setVisible(true);
-            DealerText2.setVisible(true);
-            DealerText2.setText(returnNum(dealer.get(1)));
-        }
-        if(dealer.size() >= 3) {
-            DealerCard3.setVisible(true);
-            DealerText3.setVisible(true);
-            DealerText3.setText(returnNum(dealer.get(2)));
-        }
-        if(dealer.size() >= 4) {
-            DealerCard4.setVisible(true);
-            DealerText4.setVisible(true);
-            DealerText4.setText(returnNum(dealer.get(3)));
-        }
-        if(dealer.size() >= 5) {
-            DealerCard5.setVisible(true);
-            DealerText5.setVisible(true);
-            DealerText5.setText(returnNum(dealer.get(4)));
-        }
-        if(dealer.size() >= 6) {
-            DealerCard6.setVisible(true);
-            DealerText6.setVisible(true);
-            DealerText6.setText(returnNum(dealer.get(5)));
-        }
-        if(dealer.size() >= 7) {
-            DealerCard7.setVisible(true);
-            DealerText7.setVisible(true);
-            DealerText7.setText(returnNum(dealer.get(6)));
-        }
-        DealerBottomNum.setText(returnNum(dealer.get(dealer.size()-1)));
+        DealerBottomNum.setVisible(true);
         DealerBottomNum.setX(25 * (dealer.size()-1));
     }
 
@@ -244,7 +272,7 @@ public class BlackjackController extends MenuController {
            return "" + card.getNum();
     }
     protected Card drawRandomCard(){
-        int x  = (int) (Math.random() *deck.size());
+        int x  = (int) (Math.random() * deck.size());
         Card temp = deck.get(x);
         deck.remove(x);
         return temp;
