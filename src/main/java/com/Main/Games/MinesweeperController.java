@@ -39,7 +39,7 @@ public class MinesweeperController extends MenuController implements Initializab
             }
         });
         setBoard(0);
-        //coverBoard();
+        coverBoard();
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
@@ -57,32 +57,29 @@ public class MinesweeperController extends MenuController implements Initializab
 
     public void showAllAround(int row, int col) {
         Node temp = getNodeByRowColumnIndex(MainGridpane, row, col);
-        if (temp != null) {
+        if (temp instanceof ImageView) {
             temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
             temp.setVisible(false);
             lose();
         } else {
-            //System.out.println(yeet);
             showNearby(row, col);
+            temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
+            temp.setVisible(false);
         }
     }
 
     private void showNearby(int row, int col) {
         if(MainArray[row][col] == null){
-            Node temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
-            temp.setVisible(false);
             MainArray[row][col] = 0;
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
-                    if ((row < GridSize && row >= 0) && (col >= 0 && col < GridSize) &&
+                    if ((row+x < GridSize && row+x >= 0) && (col+y >= 0 && col+y < GridSize) &&
                             (x != y) && !(x == -1 && y == 1) && !(x == 1 && y == -1)) {
                         if (MainArray[row + x][col + y] == null) {
-                            if (MainArray[row + x][col + y] == null) {
-                                MainArray[row + x][col + y] = 0;
-                                Node square = getNodeByRowColumnIndex(CoverSquareGridpane, row + x, col + y);
-                                square.setVisible(false);
+                                //MainArray[row + x][col + y] = 0;
+                                //Node square = getNodeByRowColumnIndex(CoverSquareGridpane, row + x, col + y);
+                                //square.setVisible(false);
                                 showAllAround(row + x, col + y);
-                            }
                         }
                     }
                 }
@@ -142,10 +139,12 @@ public class MinesweeperController extends MenuController implements Initializab
 
                     if (num < numBombs && Math.random() < .206) {
                         MainGridpane.add(tempImage, row, col);
+
+
+                        //I hate this so much but this is the only way to make it work
+                        MainArray[col][row] = 1;
                         num++;
-                        MainArray[row][col] = 1;
                     }
-                    //GridPane.setConstraints((Node) image, 2, 0);
                 }
             }
             if (num < numBombs) {
@@ -159,7 +158,7 @@ public class MinesweeperController extends MenuController implements Initializab
                         tempText.setVisible(true);
                         tempText.setStyle("-fx-font-size : 20px");
                         tempText.setText("" + nearbyBomb);
-                        MainGridpane.add(tempText, row, col);
+                        MainGridpane.add(tempText, col, row);
                     }
                 }
             }
@@ -181,6 +180,7 @@ public class MinesweeperController extends MenuController implements Initializab
 
                     rect.setFitHeight(pixelSize / GridSize);
                     rect.setFitWidth(pixelSize / GridSize);
+                    rect.setOpacity(.6);
 
                     CoverSquareGridpane.add(rect, row, col);
                 }
