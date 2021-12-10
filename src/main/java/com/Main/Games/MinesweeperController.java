@@ -9,8 +9,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
 import java.net.URL;
@@ -26,6 +26,7 @@ public class MinesweeperController extends MenuController implements Initializab
     private final int GridSize = 24;
     private final int pixelSize = 600;
     private final int numBombs = (int) ((GridSize * GridSize) / 4.85);
+    Integer[][] MainArray = new Integer[GridSize][GridSize];
 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         mainBox.setOnMouseClicked(event -> {
@@ -38,7 +39,7 @@ public class MinesweeperController extends MenuController implements Initializab
             }
         });
         setBoard(0);
-        coverBoard();
+        //coverBoard();
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
@@ -56,31 +57,32 @@ public class MinesweeperController extends MenuController implements Initializab
 
     public void showAllAround(int row, int col) {
         Node temp = getNodeByRowColumnIndex(MainGridpane, row, col);
-        //String yeet = "" + temp.getClass();
-        if(temp != null){
-            //System.out.println(yeet);
+        if (temp != null) {
             temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
             temp.setVisible(false);
             lose();
-        }
-        else{
+        } else {
             //System.out.println(yeet);
-            temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
-            temp.setVisible(false);
-
             showNearby(row, col);
         }
     }
-    private void showNearby(int row, int col){
-        Node temp;
-        for(int x = -1; x < 2; x++){
-            for(int y = -1; y < 2; y++){
-                if((row < GridSize && row >= 0) && (col >= 0 && col < GridSize) && !(x == 0 && y == 0)){
-                    temp = getNodeByRowColumnIndex(MainGridpane, row + x, col + y);
-                    if(temp == null) {
-                        temp = getNodeByRowColumnIndex(CoverSquareGridpane, row + x, col + y);
-                        if(temp != null) {
-                            temp.setVisible(false);
+
+    private void showNearby(int row, int col) {
+        if(MainArray[row][col] == null){
+            Node temp = getNodeByRowColumnIndex(CoverSquareGridpane, row, col);
+            temp.setVisible(false);
+            MainArray[row][col] = 0;
+            for (int x = -1; x < 2; x++) {
+                for (int y = -1; y < 2; y++) {
+                    if ((row < GridSize && row >= 0) && (col >= 0 && col < GridSize) &&
+                            (x != y) && !(x == -1 && y == 1) && !(x == 1 && y == -1)) {
+                        if (MainArray[row + x][col + y] == null) {
+                            if (MainArray[row + x][col + y] == null) {
+                                MainArray[row + x][col + y] = 0;
+                                Node square = getNodeByRowColumnIndex(CoverSquareGridpane, row + x, col + y);
+                                square.setVisible(false);
+                                showAllAround(row + x, col + y);
+                            }
                         }
                     }
                 }
@@ -88,8 +90,24 @@ public class MinesweeperController extends MenuController implements Initializab
         }
     }
 
-    private void lose(){
+    private void lose() {
 
+    }
+
+    private int numBombsNearby(int row, int col){
+        int count = 0;
+        if(MainArray[row][col] == null) {
+            for (int x = -1; x < 2; x++) {
+                for (int y = -1; y < 2; y++) {
+                    if (!(x == 0 && y == 0) && row + x < GridSize && row + x >= 0 && col + y < GridSize && col + y >= 0) {
+                        if (MainArray[row + x][col + y] != null && MainArray[row + x][col + y] == 1) {
+                            count++;
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     private Node getNodeByRowColumnIndex(GridPane pane, final int row, final int column) {
@@ -107,12 +125,14 @@ public class MinesweeperController extends MenuController implements Initializab
 
         return result;
     }
+
     private void setBoard(int numCurrentBombs) {
         int num = numCurrentBombs;
         try {
+            //Set Bombs
             for (int row = 0; row < GridSize; row++) {
                 for (int col = 0; col < GridSize; col++) {
-                    FileInputStream inputstream = new FileInputStream("/Users/3064683/Desktop/mine-icon.png");
+                    FileInputStream inputstream = new FileInputStream("src/main/resources/fxml/images/mine-icon.png");
                     Image image = new Image(inputstream);
 
                     ImageView tempImage = new ImageView();
@@ -123,6 +143,7 @@ public class MinesweeperController extends MenuController implements Initializab
                     if (num < numBombs && Math.random() < .206) {
                         MainGridpane.add(tempImage, row, col);
                         num++;
+                        MainArray[row][col] = 1;
                     }
                     //GridPane.setConstraints((Node) image, 2, 0);
                 }
@@ -130,16 +151,29 @@ public class MinesweeperController extends MenuController implements Initializab
             if (num < numBombs) {
                 setBoard(num);
             }
+            for (int row = 0; row < GridSize; row++) {
+                for (int col = 0; col < GridSize; col++) {
+                    int nearbyBomb = numBombsNearby(row, col);
+                    if(nearbyBomb != 0) {
+                        Text tempText = new Text();
+                        tempText.setVisible(true);
+                        tempText.setStyle("-fx-font-size : 20px");
+                        tempText.setText("" + nearbyBomb);
+                        MainGridpane.add(tempText, row, col);
+                    }
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private void coverBoard() {
         try {
             for (int row = 0; row < GridSize; row++) {
                 for (int col = 0; col < GridSize; col++) {
-                    FileInputStream inputstream = new FileInputStream("/Users/3064683/Desktop/Square.jpg");
+                    FileInputStream inputstream = new FileInputStream("src/main/resources/fxml/images/Square.jpg");
                     Image image = new Image(inputstream);
 
                     ImageView rect = new ImageView();
@@ -151,7 +185,7 @@ public class MinesweeperController extends MenuController implements Initializab
                     CoverSquareGridpane.add(rect, row, col);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

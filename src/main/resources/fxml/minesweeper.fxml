@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.MinesweeperController">
    <children>
-      <GridPane fx:id="MainGridpane" prefHeight="600.0" prefWidth="600.0">
+      <GridPane fx:id="MainGridpane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -62,7 +62,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-       <GridPane fx:id="CoverSquareGridpane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
+       <GridPane fx:id="CoverSquareGridpane" alignment="CENTER" gridLinesVisible="true" prefHeight="600.0" prefWidth="600.0">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
