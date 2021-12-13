@@ -2,38 +2,55 @@ package com.Main.Games;
 
 import com.Main.MenuController;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class MinesweeperController extends MenuController implements Initializable {
-
+public class MinesweeperController extends MenuController {
     @FXML
     Rectangle mainBox;
     @FXML
     GridPane MainGridpane, CoverSquareGridpane;
+    @FXML
+    AnchorPane popUp;
+    @FXML
+    Text finalText;
+
     private boolean keyHeld = false;
 
     //Constants for the board
     private final int GridSize = 24;
     private final int pixelSize = 600;
     private final int numBombs = (int) ((GridSize * GridSize) / 4.85);
-    private final Integer[][] MainArray = new Integer[GridSize][GridSize];
-    private final boolean[][] MarkedSquares = new boolean[GridSize][GridSize];
-    private boolean locked = false;
+    private Integer[][] MainArray;
+    private boolean[][] MarkedSquares;
+    private boolean locked;
 
 
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize() {
+        MainGridpane.getChildren().clear();
+        CoverSquareGridpane.getChildren().clear();
+        popUp.setVisible(false);
+        locked = false;
+        MainArray = new Integer[GridSize][GridSize];
+        MarkedSquares = new boolean[GridSize][GridSize];
+        MainGridpane.setGridLinesVisible(true);
+
         mainBox.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 if(keyHeld)
@@ -45,6 +62,7 @@ public class MinesweeperController extends MenuController implements Initializab
             }
         });
         setBoard(0);
+        addNumbers();
         coverBoard();
 
         for(int x = 0; x < GridSize; x++){
@@ -59,9 +77,8 @@ public class MinesweeperController extends MenuController implements Initializab
             int GridRow = (int) row / (pixelSize / GridSize);
             int GridCol = (int) col / (pixelSize / GridSize);
 
-            if (isLeftClick) {
-                if(!MarkedSquares[GridRow][GridCol])
-                    showAllAround(GridRow, GridCol);
+            if (isLeftClick && !MarkedSquares[GridRow][GridCol]) {
+                showAllAround(GridRow, GridCol);
             } else {
                 try {
                     Node temp = getNodeByRowColumnIndex(CoverSquareGridpane, GridRow, GridCol);
@@ -149,22 +166,60 @@ public class MinesweeperController extends MenuController implements Initializab
 
     private void lose() {
         locked = true;
+        showBombs();
+        finalText.setText("You Lose");
+
+        //I just thought this was hilarious
+        win();
     }
-    private void win() {}
+    private void win() {
+        Task<Void> sleeper = new Task<>() {
+            @Override
+            protected Void call() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        sleeper.setOnSucceeded(event -> {
+            popUp.setVisible(true);
+        });
+        new Thread(sleeper).start();
+    }
     private boolean clearedAllNonBombs(){
         int count = 0;
+        int numMarked = 0;
         for(int x = 0; x < GridSize; x++){
             for(int y = 0; y < GridSize; y++){
                 if(getNodeByRowColumnIndex(CoverSquareGridpane, x, y).isVisible())
                     count++;
             }
         }
+        for(int x = 0; x < GridSize; x++){
+            for(int y = 0; y < GridSize; y++){
+                if(MarkedSquares[x][y])
+                    numMarked++;
+            }
+        }
+        count -= numMarked;
         return count == numBombs;
     }
     public void setKeyHeld(boolean x){
         keyHeld = x;
     }
-
+    public void showBombs(){
+        for (int x = 0; x < GridSize; x++){
+            for(int y = 0; y < GridSize; y++){
+                if(MainArray[x][y] != null && MainArray[x][y] == 1 && !MarkedSquares[x][y]){
+                    Node temp = getNodeByRowColumnIndex(CoverSquareGridpane, x, y);
+                    temp.setVisible(false);
+                }
+            }
+        }
+    }
 
     private Node getNodeByRowColumnIndex(GridPane pane, final int row, final int column) {
         Node result = null;
@@ -210,22 +265,23 @@ public class MinesweeperController extends MenuController implements Initializab
             if (num < numBombs) {
                 setBoard(num);
             }
-            for (int row = 0; row < GridSize; row++) {
-                for (int col = 0; col < GridSize; col++) {
-                    int nearbyBomb = numBombsNearby(row, col);
-                    if(nearbyBomb != 0) {
-                        Text tempText = new Text();
-                        tempText.setVisible(true);
-                        tempText.setStyle("-fx-font-size : 20px");
-                        tempText.setText("" + nearbyBomb);
-                        MainArray[row][col] = 2;
-                        MainGridpane.add(tempText, col, row);
-                    }
-                }
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    private void addNumbers(){
+        for (int row = 0; row < GridSize; row++) {
+            for (int col = 0; col < GridSize; col++) {
+                int nearbyBomb = numBombsNearby(row, col);
+                if(nearbyBomb != 0) {
+                    Text tempText = new Text();
+                    tempText.setVisible(true);
+                    tempText.setStyle("-fx-font-size : 20px");
+                    tempText.setText("" + nearbyBomb);
+                    MainArray[row][col] = 2;
+                    MainGridpane.add(tempText, col, row);
+                }
+            }
         }
     }
     private void coverBoard() {
@@ -240,7 +296,7 @@ public class MinesweeperController extends MenuController implements Initializab
 
                     rect.setFitHeight(pixelSize / GridSize);
                     rect.setFitWidth(pixelSize / GridSize);
-                    //rect.setOpacity(.7);
+                    rect.setOpacity(.65);
 
                     CoverSquareGridpane.add(rect, row, col);
                 }
@@ -249,4 +305,6 @@ public class MinesweeperController extends MenuController implements Initializab
             e.printStackTrace();
         }
     }
+
 }
+

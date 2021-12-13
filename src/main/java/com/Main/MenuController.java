@@ -1,7 +1,6 @@
 package com.Main;
 
 import com.Main.Games.MinesweeperController;
-import com.Main.Games.MinesweeperController.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +49,7 @@ public class MenuController {
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         scene = new Scene(root);
 
+        //It's a bit of a mess because it detects if keys are pressed (that kinda rhymes)
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -57,7 +57,6 @@ public class MenuController {
                      controller.setKeyHeld(true);
             }
         });
-
         scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
