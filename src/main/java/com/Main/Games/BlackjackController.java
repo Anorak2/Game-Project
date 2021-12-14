@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class BlackjackController extends MenuController {
@@ -41,7 +42,6 @@ public class BlackjackController extends MenuController {
         }
     }
 
-
     @FXML
     Button DrawButton;
     @FXML
@@ -61,10 +61,13 @@ public class BlackjackController extends MenuController {
     @FXML
     AnchorPane AnchorPane;
 
-    ArrayList<Card> deck = new ArrayList<>();
-    ArrayList<Card> player = new ArrayList<>();
-    ArrayList<Card> dealer = new ArrayList<>();
-    Boolean Stand = false;
+    private ArrayList<Card> deck = new ArrayList<>();
+    private ArrayList<Card> player = new ArrayList<>();
+    private ArrayList<Card> dealer = new ArrayList<>();
+    private Boolean Stand = false;
+    private ImageView PlayerBot;
+    private ImageView DealerBot;
+
 
 
     public void initialize() {
@@ -152,24 +155,22 @@ public class BlackjackController extends MenuController {
         PlayerBottomNum.setVisible(true);
         PlayerBottomNum.setX(25 * (player.size()-1));
     }
-    private ImageView PlayerBot;
-    private ImageView DealerBot;
     private void colorTheNums(int x, Boolean isPlayer){
         try {
             if (isPlayer) {
                 FileInputStream inputstream;
+                Image image;
 
                 if (player.get(x).getSuite().equals("Diamond"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Diamond.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Diamond.png")));
                 else if ( player.get(x).getSuite().equals("Heart"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Heart.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Heart.png")));
                 else if (player.get(x).getSuite().equals("Club"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Club.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Club.png")));
                 else
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Spade.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Spade.png")));
 
 
-                Image image = new Image(inputstream);
                 ImageView tempImage = new ImageView();
                 tempImage.setImage(image);
                 tempImage.setFitHeight(20);

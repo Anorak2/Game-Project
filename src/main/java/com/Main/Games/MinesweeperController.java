@@ -3,9 +3,7 @@ package com.Main.Games;
 import com.Main.MenuController;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,16 +14,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.FileInputStream;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class MinesweeperController extends MenuController {
     @FXML
     Rectangle mainBox;
     @FXML
-    GridPane MainGridpane, CoverSquareGridpane;
+    GridPane MainGridpane, CoverSquareGridpane, stupidStyleGridpane;
     @FXML
     AnchorPane popUp;
     @FXML
@@ -35,11 +30,12 @@ public class MinesweeperController extends MenuController {
 
     //Constants for the board
     private final int GridSize = 24;
-    private final int pixelSize = 600;
+    private final double pixelSize = 600.0;
     private final int numBombs = (int) ((GridSize * GridSize) / 4.85);
     private Integer[][] MainArray;
     private boolean[][] MarkedSquares;
     private boolean locked;
+    private final double tileSize = pixelSize / GridSize;
 
 
     public void initialize() {
@@ -49,14 +45,11 @@ public class MinesweeperController extends MenuController {
         locked = false;
         MainArray = new Integer[GridSize][GridSize];
         MarkedSquares = new boolean[GridSize][GridSize];
-        MainGridpane.setGridLinesVisible(true);
+        finalText.setText("You Win!");
 
         mainBox.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if(keyHeld)
-                    click(false, event.getSceneY(), event.getSceneX());
-                else
-                    click(true, event.getSceneY(), event.getSceneX());
+                click(!keyHeld, event.getSceneY(), event.getSceneX());
             } else if (event.getButton().equals(MouseButton.SECONDARY)) {
                 click(false, event.getSceneY(), event.getSceneX());
             }
@@ -64,6 +57,7 @@ public class MinesweeperController extends MenuController {
         setBoard(0);
         addNumbers();
         coverBoard();
+        gridLines();
 
         for(int x = 0; x < GridSize; x++){
             for(int y = 0; y < GridSize; y++){
@@ -74,26 +68,25 @@ public class MinesweeperController extends MenuController {
 
     public void click(Boolean isLeftClick, double row, double col) {
         if(!locked) {
-            int GridRow = (int) row / (pixelSize / GridSize);
-            int GridCol = (int) col / (pixelSize / GridSize);
+            int GridRow = (int) row / ((int) tileSize);
+            int GridCol = (int) col / ((int) tileSize);
 
             if (isLeftClick && !MarkedSquares[GridRow][GridCol]) {
                 showAllAround(GridRow, GridCol);
             } else {
                 try {
                     Node temp = getNodeByRowColumnIndex(CoverSquareGridpane, GridRow, GridCol);
-                    FileInputStream inputstream = new FileInputStream("src/main/resources/fxml/images/Square.jpg");
+                    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Square.jpg")));
 
                     if (!MarkedSquares[GridRow][GridCol]) {
                         if (MainArray[GridRow][GridCol] == null || (MainArray[GridRow][GridCol] != null && MainArray[GridRow][GridCol] != 0)) {
-                            inputstream = new FileInputStream("src/main/resources/fxml/images/flag.png");
+                            image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/flag.png")));
                             MarkedSquares[GridRow][GridCol] = true;
                         }
                     } else if (MarkedSquares[GridRow][GridCol]) {
                         MarkedSquares[GridRow][GridCol] = false;
                     }
 
-                    Image image = new Image(inputstream);
                     ((ImageView) temp).setImage(image);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -242,8 +235,7 @@ public class MinesweeperController extends MenuController {
             //Set Bombs
             for (int row = 0; row < GridSize; row++) {
                 for (int col = 0; col < GridSize; col++) {
-                    FileInputStream inputstream = new FileInputStream("src/main/resources/fxml/images/mine-icon.png");
-                    Image image = new Image(inputstream);
+                    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/mine-icon.png")));
 
                     ImageView tempImage = new ImageView();
                     tempImage.setImage(image);
@@ -278,6 +270,7 @@ public class MinesweeperController extends MenuController {
                     tempText.setVisible(true);
                     tempText.setStyle("-fx-font-size : 20px");
                     tempText.setText("" + nearbyBomb);
+                    tempText.setTranslateX(7);
                     MainArray[row][col] = 2;
                     MainGridpane.add(tempText, col, row);
                 }
@@ -288,15 +281,14 @@ public class MinesweeperController extends MenuController {
         try {
             for (int row = 0; row < GridSize; row++) {
                 for (int col = 0; col < GridSize; col++) {
-                    FileInputStream inputstream = new FileInputStream("src/main/resources/fxml/images/Square.jpg");
-                    Image image = new Image(inputstream);
+                    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Square.jpg")));
 
                     ImageView rect = new ImageView();
                     rect.setImage(image);
 
-                    rect.setFitHeight(pixelSize / GridSize);
-                    rect.setFitWidth(pixelSize / GridSize);
-                    rect.setOpacity(.65);
+                    rect.setFitHeight(tileSize);
+                    rect.setFitWidth(tileSize);
+                    //rect.setOpacity(.6);
 
                     CoverSquareGridpane.add(rect, row, col);
                 }
@@ -305,6 +297,17 @@ public class MinesweeperController extends MenuController {
             e.printStackTrace();
         }
     }
-
+    private void gridLines(){
+        for(int x = 0; x < GridSize; x++) {
+            for(int y = 0; y < GridSize; y++) {
+                Rectangle thing = new Rectangle();
+                thing.setWidth(tileSize);
+                thing.setHeight(tileSize);
+                thing.setStyle("-fx-fill: #bdbdbd; -fx-stroke: #252525; -fx-strokeType : INSIDE; -fx-strokeWidth: 5");
+                thing.setVisible(true);
+                stupidStyleGridpane.add(thing, x,y);
+            }
+        }
+    }
 }
 
