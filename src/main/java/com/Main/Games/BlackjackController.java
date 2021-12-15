@@ -187,18 +187,17 @@ public class BlackjackController extends MenuController {
                 AnchorPane.getChildren().add(tempImage);
 
             } else {
-                FileInputStream inputstream;
+                Image image;
 
                 if (dealer.get(x).getSuite().equals("Diamond"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Diamond.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Diamond.png")));
                 else if (dealer.get(x).getSuite().equals("Heart"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Heart.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Heart.png")));
                 else if (dealer.get(x).getSuite().equals("Club"))
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Club.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Club.png")));
                 else
-                    inputstream = new FileInputStream("src/main/resources/fxml/images/Spade.png");
+                    image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Spade.png")));
 
-                Image image = new Image(inputstream);
                 ImageView tempImage = new ImageView();
                 tempImage.setImage(image);
                 tempImage.setFitHeight(20);

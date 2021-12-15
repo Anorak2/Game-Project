@@ -13,9 +13,9 @@ public class Main extends Application {
         try {
             URL fxmlLocation = getClass().getResource("/fxml/menu.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
-            Scene scene = new Scene(fxmlLoader.load(), 200, 400);
+            Scene scene = new Scene(fxmlLoader.load(), 150, 400);
             stage.setResizable(false);
-            stage.setTitle("Adam's Games");
+            //stage.setTitle("Adam's Games");
             stage.setScene(scene);
             stage.show();
         }
