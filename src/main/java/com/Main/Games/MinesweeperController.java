@@ -4,6 +4,7 @@ import com.Main.MenuController;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -11,7 +12,9 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
 import java.util.Objects;
 
 public class MinesweeperController extends MenuController {
@@ -27,7 +30,8 @@ public class MinesweeperController extends MenuController {
     private boolean keyHeld = false;
 
     //Constants for the board
-    private final int GridSize = 16;
+    private final String musicFile = "src/main/resources/explosion.mp3";
+    private final int GridSize = 24;
     private final double pixelSize = 600.0;
     private final int numBombs = (int) ((GridSize * GridSize) / 4.85);
     private boolean[][] MarkedSquares;
@@ -51,6 +55,8 @@ public class MinesweeperController extends MenuController {
         isShown = new boolean[GridSize][GridSize];
         finalText.setText("You Win!");
 
+        MainGridPane.setAlignment(Pos.CENTER);
+
         mainBox.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 click(!keyHeld, event.getSceneY(), event.getSceneX());
@@ -65,9 +71,9 @@ public class MinesweeperController extends MenuController {
                 MainArray[x][y] = -1;
              }
             RowConstraints row = new RowConstraints();
-            row.setPrefHeight(pixelSize/GridSize);
+            row.setPrefHeight(tileSize);
             ColumnConstraints col = new ColumnConstraints();
-            row.setPrefHeight(pixelSize/GridSize);
+            col.setPrefWidth(tileSize);
 
             MainGridPane.getRowConstraints().add(row);
             MainGridPane.getColumnConstraints().add(col);
@@ -81,22 +87,28 @@ public class MinesweeperController extends MenuController {
         setBoard(0);
         addNumbers();
         coverBoard();
-        //gridLines();
+        gridLines();
         long endTime2 = System.nanoTime();
-        System.out.println((endTime2 - startTime2)/1000000);
+        //System.out.println((endTime2 - startTime2)/1000000);
 
         long endTime = System.nanoTime();
-        System.out.println((endTime - startTime)/1000000);
+        //System.out.println((endTime - startTime)/1000000);
+        //System.out.println();
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
         if(!locked) {
-            int GridRow = (int) row / ((int) tileSize);
-            int GridCol = (int) col / ((int) tileSize);
+            int GridRow = (int) (row / tileSize);
+            int GridCol = (int) (col / tileSize);
+
+            if(GridRow >= GridSize)
+                GridRow = GridSize-1;
+            if(GridCol >= GridSize)
+                GridCol = GridSize-1;
 
             if (isLeftClick && !MarkedSquares[GridRow][GridCol]) {
                 showAllAround(GridRow, GridCol);
-            } else {
+            } else if(!isLeftClick){
                 try {
                     Node temp = getImageByRowCol(CoverSquareGridPane, GridRow, GridCol);
                     Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Square.jpg")));
@@ -187,6 +199,10 @@ public class MinesweeperController extends MenuController {
         showBombs();
         finalText.setText("You Lose");
 
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+
         //I just thought this was hilarious
         win();
     }
@@ -207,13 +223,12 @@ public class MinesweeperController extends MenuController {
     }
     private boolean clearedAllNonBombs(){
         int count = 0;
-        for(int x = 0; x < GridSize; x++){
-            for(int y = 0; y < GridSize; y++){
-                if(!isShown[x][y])
+        for(int x = 0; x < GridSize; x++) {
+            for (int y = 0; y < GridSize; y++) {
+                if (!isShown[x][y])
                     count++;
             }
         }
-        System.out.println(count);
         return count == numBombs;
     }
     public void setKeyHeld(boolean x){
@@ -285,7 +300,7 @@ public class MinesweeperController extends MenuController {
                     tempText.setVisible(true);
                     tempText.setStyle("-fx-font-size : 20px");
                     tempText.setText("" + nearbyBombs);
-                    tempText.setTranslateX(7);
+                    tempText.setTranslateX(tileSize/2-6);
                     MainArray[row][col] = 2;
                     MainGridPane.add(tempText, col, row);
                 }
@@ -303,7 +318,7 @@ public class MinesweeperController extends MenuController {
                     rect.setFitHeight(tileSize);
                     rect.setFitWidth(tileSize);
 
-                    rect.setOpacity(.6);
+                    //rect.setOpacity(.6);
 
                     CoverSquareGridPane.add(rect, row, col);
                 }
@@ -316,13 +331,13 @@ public class MinesweeperController extends MenuController {
         for(int x = 0; x < GridSize; x++) {
             for(int y = 0; y < GridSize; y++) {
                 Rectangle thing = new Rectangle();
-                thing.setWidth(tileSize);
-                thing.setHeight(tileSize);
-                thing.setStyle("-fx-fill: #bdbdbd; -fx-stroke: #252525; -fx-strokeType : INSIDE; -fx-strokeWidth: 5");
+                thing.setWidth(tileSize-1.75);
+                thing.setHeight(tileSize-1.75);
+                thing.setStyle("-fx-fill: #bdbdbd; -fx-stroke: #bdbdbd; -fx-strokeWidth: 1.75");
                 thing.setVisible(true);
-                stupidStyleGridPane.add(thing, x,y);
+                stupidStyleGridPane.getChildren().add(thing);
+                GridPane.setConstraints(thing, x,y);
             }
         }
     }
 }
-
