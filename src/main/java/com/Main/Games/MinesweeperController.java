@@ -4,96 +4,125 @@ import com.Main.MenuController;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
+import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.io.File;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MinesweeperController extends MenuController {
     @FXML
     Rectangle mainBox;
     @FXML
-    GridPane MainGridPane, CoverSquareGridPane, stupidStyleGridPane;
+    GridPane MainGridPane, CoverSquareGridPane;
     @FXML
-    AnchorPane popUp;
+    AnchorPane popUp, bigBoi;
     @FXML
     Text finalText;
+    @FXML
+    BorderPane Menu;
 
     private boolean keyHeld = false;
 
     //Constants for the board
-    private final String musicFile = "src/main/resources/explosion.mp3";
-    private final int GridSize = 24;
-    private final double pixelSize = 600.0;
-    private final int numBombs = (int) ((GridSize * GridSize) / 4.85);
+    private int GridSize = 18;
+    private  int numBombs;
     private boolean[][] MarkedSquares;
     private boolean[][] isShown;
     private boolean locked;
-    private final double tileSize = pixelSize / GridSize;
+    private long tileSize;
 
     //-1 == nothing, clicked on square == 0, Bomb == 1, Number == 2
     private Integer[][] MainArray;
 
 
     public void initialize() {
-        long startTime = System.nanoTime();
-        MainGridPane.getChildren().clear();
-        CoverSquareGridPane.getChildren().clear();
-        stupidStyleGridPane.getChildren().clear();
-        popUp.setVisible(false);
-        locked = false;
-        MainArray = new Integer[GridSize][GridSize];
-        MarkedSquares = new boolean[GridSize][GridSize];
-        isShown = new boolean[GridSize][GridSize];
-        finalText.setText("You Win!");
+        try {
+            long startTime = System.nanoTime();
+            double pixelSize = 600.0;
 
-        MainGridPane.setAlignment(Pos.CENTER);
+            final Menu menu1 = new Menu("size");
+            MenuItem twelve = new MenuItem("12x12");
+            MenuItem eighteen = new MenuItem("18x18");
+            MenuItem twentyFour = new MenuItem("24x24");
+            twelve.setOnAction(event -> changeGridSize(12));
+            eighteen.setOnAction(event -> changeGridSize(18));
+            twentyFour.setOnAction(event -> changeGridSize(24));
+            menu1.getItems().addAll(twelve, eighteen, twentyFour);
 
-        mainBox.setOnMouseClicked(event -> {
-            if (event.getButton().equals(MouseButton.PRIMARY)) {
-                click(!keyHeld, event.getSceneY(), event.getSceneX());
-            } else if (event.getButton().equals(MouseButton.SECONDARY)) {
-                click(false, event.getSceneY(), event.getSceneX());
+            final Menu menu2 = new Menu("help");
+
+            MenuBar menuBar = new MenuBar();
+            menuBar.getMenus().addAll(menu1, menu2);
+            menuBar.useSystemMenuBarProperty().set(true);
+            Menu.setTop(menuBar);
+
+            numBombs = (int) ((GridSize * GridSize) / 4.85);
+            tileSize = (long) (pixelSize / GridSize);
+            clearMainGridPane();
+            CoverSquareGridPane.getChildren().clear();
+            CoverSquareGridPane.setGridLinesVisible(true);
+            MainGridPane.setGridLinesVisible(true);
+            popUp.setVisible(false);
+            locked = false;
+            MainArray = new Integer[GridSize][GridSize];
+            MarkedSquares = new boolean[GridSize][GridSize];
+            isShown = new boolean[GridSize][GridSize];
+            finalText.setText("You Win!");
+
+
+
+
+            MainGridPane.getRowConstraints().clear();
+            MainGridPane.getColumnConstraints().clear();
+            CoverSquareGridPane.getRowConstraints().clear();
+            CoverSquareGridPane.getColumnConstraints().clear();
+
+            mainBox.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    click(!keyHeld, event.getSceneY(), event.getSceneX());
+                } else if (event.getButton().equals(MouseButton.SECONDARY)) {
+                    click(false, event.getSceneY(), event.getSceneX());
+                }
+            });
+            for (int x = 0; x < GridSize; x++) {
+                for (int y = 0; y < GridSize; y++) {
+                    MarkedSquares[x][y] = false;
+                    isShown[x][y] = false;
+                    MainArray[x][y] = -1;
+                }
+                RowConstraints row = new RowConstraints();
+                row.setPrefHeight(tileSize);
+                ColumnConstraints col = new ColumnConstraints();
+                col.setPrefWidth(tileSize);
+
+                MainGridPane.getRowConstraints().add(row);
+                MainGridPane.getColumnConstraints().add(col);
+                CoverSquareGridPane.getRowConstraints().add(row);
+                CoverSquareGridPane.getColumnConstraints().add(col);
             }
-        });
-        for(int x = 0; x < GridSize; x++){
-            for(int y = 0; y < GridSize; y++){
-                MarkedSquares[x][y] = false;
-                isShown[x][y] = false;
-                MainArray[x][y] = -1;
-             }
-            RowConstraints row = new RowConstraints();
-            row.setPrefHeight(tileSize);
-            ColumnConstraints col = new ColumnConstraints();
-            col.setPrefWidth(tileSize);
+            setBoard(0);
+            addNumbers();
+            coverBoard();
 
-            MainGridPane.getRowConstraints().add(row);
-            MainGridPane.getColumnConstraints().add(col);
-            CoverSquareGridPane.getRowConstraints().add(row);
-            CoverSquareGridPane.getColumnConstraints().add(col);
-            stupidStyleGridPane.getRowConstraints().add(row);
-            stupidStyleGridPane.getColumnConstraints().add(col);
+            long endTime = System.nanoTime();
+
+            System.out.println((endTime-startTime)/1000000);
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-        long startTime2 = System.nanoTime();
-        setBoard(0);
-        addNumbers();
-        coverBoard();
-        gridLines();
-        long endTime2 = System.nanoTime();
-        //System.out.println((endTime2 - startTime2)/1000000);
-
-        long endTime = System.nanoTime();
-        //System.out.println((endTime - startTime)/1000000);
-        //System.out.println();
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
@@ -199,7 +228,7 @@ public class MinesweeperController extends MenuController {
         showBombs();
         finalText.setText("You Lose");
 
-        Media sound = new Media(new File(musicFile).toURI().toString());
+        Media sound = new Media(Objects.requireNonNull(getClass().getResource("/fxml/sounds/explosion.mp3")).toExternalForm());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
 
@@ -273,8 +302,8 @@ public class MinesweeperController extends MenuController {
 
                         ImageView tempImage = new ImageView();
                         tempImage.setImage(image);
-                        tempImage.setFitHeight(pixelSize / GridSize);
-                        tempImage.setFitWidth(pixelSize / GridSize);
+                        tempImage.setFitHeight(tileSize);
+                        tempImage.setFitWidth(tileSize);
 
                         MainGridPane.add(tempImage, row, col);
 
@@ -300,7 +329,9 @@ public class MinesweeperController extends MenuController {
                     tempText.setVisible(true);
                     tempText.setStyle("-fx-font-size : 20px");
                     tempText.setText("" + nearbyBombs);
-                    tempText.setTranslateX(tileSize/2-6);
+                    tempText.setFont(Font.font("verdana", tileSize/2));
+                    GridPane.setHalignment(tempText, HPos.CENTER);
+
                     MainArray[row][col] = 2;
                     MainGridPane.add(tempText, col, row);
                 }
@@ -327,17 +358,22 @@ public class MinesweeperController extends MenuController {
             e.printStackTrace();
         }
     }
-    private void gridLines(){
-        for(int x = 0; x < GridSize; x++) {
-            for(int y = 0; y < GridSize; y++) {
-                Rectangle thing = new Rectangle();
-                thing.setWidth(tileSize-1.75);
-                thing.setHeight(tileSize-1.75);
-                thing.setStyle("-fx-fill: #bdbdbd; -fx-stroke: #bdbdbd; -fx-strokeWidth: 1.75");
-                thing.setVisible(true);
-                stupidStyleGridPane.getChildren().add(thing);
-                GridPane.setConstraints(thing, x,y);
+    private void changeGridSize(int x){
+        GridSize = x;
+        initialize();
+    }
+    private void clearMainGridPane(){
+        ObservableList<Node> children = MainGridPane.getChildren();
+        ArrayList<Node> badChildren = new ArrayList<>();
+
+        for (Node node : children) {
+            if (GridPane.getRowIndex(node) != null && GridPane.getColumnIndex(node) != null && (node instanceof ImageView || node instanceof Text)) {
+                badChildren.add(node);
             }
+        }
+
+        for (Node badChild : badChildren) {
+            MainGridPane.getChildren().remove(badChild);
         }
     }
 }
