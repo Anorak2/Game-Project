@@ -6,6 +6,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -28,7 +29,7 @@ public class MinesweeperController extends MenuController {
     @FXML
     GridPane MainGridPane, CoverSquareGridPane;
     @FXML
-    AnchorPane popUp, bigBoi;
+    AnchorPane popUp, bigBoi, HelpMenu;
     @FXML
     Text finalText;
     @FXML
@@ -43,6 +44,8 @@ public class MinesweeperController extends MenuController {
     private boolean[][] isShown;
     private boolean locked;
     private long tileSize;
+    private boolean safety = true;
+    private boolean isFirstClick;
 
     //-1 == nothing, clicked on square == 0, Bomb == 1, Number == 2
     private Integer[][] MainArray;
@@ -62,7 +65,14 @@ public class MinesweeperController extends MenuController {
             twentyFour.setOnAction(event -> changeGridSize(24));
             menu1.getItems().addAll(twelve, eighteen, twentyFour);
 
-            final Menu menu2 = new Menu("help");
+
+            final Menu menu2 = new Menu("Other");
+            CheckMenuItem safe = new CheckMenuItem("Safety Off");
+            MenuItem help = new MenuItem("Help");
+
+            safe.setOnAction(event -> toggleSafety());
+            help.setOnAction(event -> help());
+            menu2.getItems().addAll(safe, help);
 
             MenuBar menuBar = new MenuBar();
             menuBar.getMenus().addAll(menu1, menu2);
@@ -81,8 +91,7 @@ public class MinesweeperController extends MenuController {
             MarkedSquares = new boolean[GridSize][GridSize];
             isShown = new boolean[GridSize][GridSize];
             finalText.setText("You Win!");
-
-
+            isFirstClick = true;
 
 
             MainGridPane.getRowConstraints().clear();
@@ -114,7 +123,6 @@ public class MinesweeperController extends MenuController {
                 CoverSquareGridPane.getColumnConstraints().add(col);
             }
             setBoard(0);
-            addNumbers();
             coverBoard();
 
             long endTime = System.nanoTime();
@@ -126,10 +134,15 @@ public class MinesweeperController extends MenuController {
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
+        int GridRow = (int) (row / tileSize);
+        int GridCol = (int) (col / tileSize);
+        if(isFirstClick && safety){
+            if(MainArray[GridRow][GridCol] == 1){
+                moveBomb(GridRow, GridCol);
+            }
+            addNumbers();
+        }
         if(!locked) {
-            int GridRow = (int) (row / tileSize);
-            int GridCol = (int) (col / tileSize);
-
             if(GridRow >= GridSize)
                 GridRow = GridSize-1;
             if(GridCol >= GridSize)
@@ -155,6 +168,7 @@ public class MinesweeperController extends MenuController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                isFirstClick = false;
             }
             if(clearedAllNonBombs()){
                 win();
@@ -358,6 +372,29 @@ public class MinesweeperController extends MenuController {
             e.printStackTrace();
         }
     }
+    private void moveBomb(int row, int col) {
+        int newRow = (int)((Math.random()*GridSize)+1);
+        int newCol = (int)((Math.random()*GridSize)+1);
+        if(MainArray[newRow][newCol] != 1 && !(newRow == row && newCol == col)) {
+            MainArray[newRow][newCol] = 1;
+
+            MainArray[row][col] = 0;
+            MainGridPane.getChildren().remove(getImageByRowCol(MainGridPane, row, col));
+
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/mine-icon.png")));
+
+            ImageView tempImage = new ImageView();
+            tempImage.setImage(image);
+            tempImage.setFitHeight(tileSize);
+            tempImage.setFitWidth(tileSize);
+
+            MainGridPane.add(tempImage, newRow, newCol);
+        }
+        else {
+            moveBomb(row,col);
+        }
+    }
+
     private void changeGridSize(int x){
         GridSize = x;
         initialize();
@@ -375,5 +412,11 @@ public class MinesweeperController extends MenuController {
         for (Node badChild : badChildren) {
             MainGridPane.getChildren().remove(badChild);
         }
+    }
+    private void toggleSafety(){
+        safety = !safety;
+    }
+    public void help(){
+        HelpMenu.setVisible(!HelpMenu.isVisible());
     }
 }

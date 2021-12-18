@@ -8,27 +8,21 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="bigBoi" maxHeight="600.0" maxWidth="600.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.MinesweeperController">
-   <children>
-      <BorderPane fx:id="Menu" prefHeight="200.0" prefWidth="200.0" visible="false" />
-       <GridPane fx:id="stupidStyleGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
-       </GridPane>
-      <GridPane fx:id="MainGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
+    <BorderPane fx:id="Menu" prefHeight="200.0" prefWidth="200.0" visible="false" />
+    <GridPane fx:id="MainGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
       </GridPane>
-       <GridPane fx:id="CoverSquareGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
+    <GridPane fx:id="CoverSquareGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
        </GridPane>
-      <Rectangle fx:id="mainBox" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
-       <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0" visible="false">
-           <children>
+    <Rectangle fx:id="mainBox" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
+    <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0" visible="false">
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bdbdbd" height="100.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
                <Text fx:id="finalText" layoutX="75.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You Win!" />
                <Button layoutX="25.0" layoutY="50.0" mnemonicParsing="false" onAction="#initialize" text="Again" />
                <Button layoutX="124.0" layoutY="50.0" mnemonicParsing="false" onAction="#swapToMenu" text="Menu" />
-           </children>
        </AnchorPane>
-      <AnchorPane layoutX="200.0" layoutY="200.0" prefHeight="100.0" prefWidth="200.0">
-         <children>
-               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bdbdbd" height="200.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-         </children>
-      </AnchorPane>
-   </children>
+    <AnchorPane fx:id="HelpMenu" layoutX="200.0" layoutY="238.0" prefHeight="125.0" prefWidth="200.0" visible="false">
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bdbdbd" height="125.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+        <Button layoutX="75.0" layoutY="88.0" mnemonicParsing="false" onAction="#help" text="Close" />
+      <Text layoutX="10.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="it's not super helpful but try&#10;google. In this version you&#10;can also press q or p to always &#10;place a bomb on a click" />
+    </AnchorPane>
 </AnchorPane>
