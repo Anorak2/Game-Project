@@ -38,9 +38,8 @@ public class MinesweeperController extends MenuController {
 
     //Constants for the board
     private int GridSize = 24;
-    private  int numBombs;
+    private int numBombs;
     private boolean[][] MarkedSquares;
-    private boolean[][] isShown;
     private boolean locked;
     private long tileSize;
     private boolean safety = true;
@@ -57,13 +56,15 @@ public class MinesweeperController extends MenuController {
             double pixelSize = 600.0;
 
             final Menu menu1 = new Menu("size");
+            MenuItem six = new MenuItem("6x6");
             MenuItem twelve = new MenuItem("12x12");
             MenuItem eighteen = new MenuItem("18x18");
             MenuItem twentyFour = new MenuItem("24x24");
+            six.setOnAction(event -> changeGridSize(6));
             twelve.setOnAction(event -> changeGridSize(12));
             eighteen.setOnAction(event -> changeGridSize(18));
             twentyFour.setOnAction(event -> changeGridSize(24));
-            menu1.getItems().addAll(twelve, eighteen, twentyFour);
+            menu1.getItems().addAll(six, twelve, eighteen, twentyFour);
 
 
             final Menu menu2 = new Menu("Other");
@@ -89,7 +90,6 @@ public class MinesweeperController extends MenuController {
             locked = false;
             MainArray = new Integer[GridSize][GridSize];
             MarkedSquares = new boolean[GridSize][GridSize];
-            isShown = new boolean[GridSize][GridSize];
             finalText.setText("You Win!");
             isFirstClick = true;
 
@@ -109,7 +109,6 @@ public class MinesweeperController extends MenuController {
             for (int x = 0; x < GridSize; x++) {
                 for (int y = 0; y < GridSize; y++) {
                     MarkedSquares[x][y] = false;
-                    isShown[x][y] = false;
                     MainArray[x][y] = -1;
                 }
                 RowConstraints row = new RowConstraints();
@@ -162,7 +161,7 @@ public class MinesweeperController extends MenuController {
                 }
             }
             if(clearedAllNonBombs()){
-                win();
+                win(true);
             }
         }
         isFirstClick = false;
@@ -182,7 +181,6 @@ public class MinesweeperController extends MenuController {
             Node temp = getNodeByRowCol(CoverSquareGridPane, row, col);
             temp.setVisible(false);
             MainArray[row][col] = 0;
-            isShown[row][col] = true;
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
                     int currentRow = row + x;
@@ -199,7 +197,6 @@ public class MinesweeperController extends MenuController {
                         if (MainArray[currentRow][currentCol] == 2) {
                             Node num = getNodeByRowCol(CoverSquareGridPane, currentRow, currentCol);
                             MainArray[currentRow][currentCol] = 0;
-                            isShown[currentRow][currentCol] = true;
                             num.setVisible(false);
                         }
                     }
@@ -210,7 +207,6 @@ public class MinesweeperController extends MenuController {
             Node temp = getNodeByRowCol(CoverSquareGridPane, row, col);
             temp.setVisible(false);
             MainArray[row][col] = 0;
-            isShown[row][col] = true;
         }
     }
     private int numBombsNearby(int row, int col){
@@ -239,9 +235,16 @@ public class MinesweeperController extends MenuController {
         mediaPlayer.play();
 
         //I just thought this was hilarious
-        win();
+        //Edit: not as funny anymore now that the variable is there
+        win(false);
     }
-    private void win() {
+    private void win(boolean didWin) {
+        locked = true;
+        if(didWin){
+            Media sound = new Media(Objects.requireNonNull(getClass().getResource("/fxml/sounds/victory.mp3")).toExternalForm());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
+        }
         Task<Void> sleeper = new Task<>() {
             @Override
             protected Void call() {
@@ -260,7 +263,7 @@ public class MinesweeperController extends MenuController {
         int count = 0;
         for(int x = 0; x < GridSize; x++) {
             for (int y = 0; y < GridSize; y++) {
-                if (!isShown[x][y])
+                if (MainArray[x][y] != 0)
                     count++;
             }
         }
@@ -304,7 +307,7 @@ public class MinesweeperController extends MenuController {
             for (int row = 0; row < GridSize; row++) {
                 for (int col = 0; col < GridSize; col++) {
                     //Normally 206
-                    if (num < numBombs && Math.random() < .1 && MainArray[row][col] == -1) {
+                    if (num < numBombs && Math.random() < .1 && MainArray[col][row] == -1) {
 
                         ImageView tempImage = new ImageView();
                         tempImage.setImage(image);
@@ -353,7 +356,7 @@ public class MinesweeperController extends MenuController {
                     rect.setFitHeight(tileSize);
                     rect.setFitWidth(tileSize);
 
-                    //rect.setOpacity(.6);
+                    rect.setOpacity(.6);
 
                     CoverSquareGridPane.add(rect, row, col);
                 }

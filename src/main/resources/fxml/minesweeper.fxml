@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="bigBoi" maxHeight="600.0" maxWidth="600.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.MinesweeperController">
+<AnchorPane fx:id="bigBoi" maxHeight="600.0" maxWidth="600.0" style="-fx-background-color: #bdbdbd;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.MinesweeperController">
     <BorderPane fx:id="Menu" prefHeight="200.0" prefWidth="200.0" visible="false" />
     <GridPane fx:id="MainGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
       </GridPane>
