@@ -54,7 +54,6 @@ public class MinesweeperController extends MenuController {
 
     public void initialize() {
         try {
-            long startTime = System.nanoTime();
             double pixelSize = 600.0;
 
             final Menu menu1 = new Menu("size");
@@ -125,26 +124,21 @@ public class MinesweeperController extends MenuController {
             }
             setBoard(0);
             coverBoard();
-
-            long endTime = System.nanoTime();
-
-            System.out.println((endTime-startTime)/1000000);
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
-        long startTime = System.nanoTime();
         int GridRow = (int) (row / tileSize);
         int GridCol = (int) (col / tileSize);
         if(isFirstClick && safety){
             if(MainArray[GridRow][GridCol] == 1)
                 moveBomb(GridRow, GridCol);
-            long startTime3 = System.nanoTime();
             addNumbers();
-            long endTime3 = System.nanoTime();
-            System.out.println("Add numbers: " + (endTime3-startTime3)/1000000);
+        }
+        else if(isFirstClick){
+            addNumbers();
         }
         if(!locked) {
             if(GridRow >= GridSize)
@@ -152,24 +146,19 @@ public class MinesweeperController extends MenuController {
             if(GridCol >= GridSize)
                 GridCol = GridSize-1;
 
-            if (isLeftClick && !MarkedSquares[GridRow][GridCol]) {
+            if (isLeftClick && !MarkedSquares[GridRow][GridCol])
                 showAllAround(GridRow, GridCol);
-            } else if(!isLeftClick){
-                try {
-                    Node temp = getNodeByRowCol(CoverSquareGridPane, GridRow, GridCol);
+            else if(!isLeftClick){
+                Node temp = getNodeByRowCol(CoverSquareGridPane, GridRow, GridCol);
 
-                    if (!MarkedSquares[GridRow][GridCol]) {
-                        if (MainArray[GridRow][GridCol] == -1 || (MainArray[GridRow][GridCol] != -1 && MainArray[GridRow][GridCol] != 0)) {
-                            MarkedSquares[GridRow][GridCol] = true;
-                            ((ImageView) temp).setImage(flagImage);
-                        }
-                    } else if (MarkedSquares[GridRow][GridCol]) {
-                        MarkedSquares[GridRow][GridCol] = false;
-                        ((ImageView) temp).setImage(squareImage);
+                if (!MarkedSquares[GridRow][GridCol]) {
+                    if (MainArray[GridRow][GridCol] == -1 || (MainArray[GridRow][GridCol] != -1 && MainArray[GridRow][GridCol] != 0)) {
+                        MarkedSquares[GridRow][GridCol] = true;
+                        ((ImageView) temp).setImage(flagImage);
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else if (MarkedSquares[GridRow][GridCol]) {
+                    MarkedSquares[GridRow][GridCol] = false;
+                    ((ImageView) temp).setImage(squareImage);
                 }
             }
             if(clearedAllNonBombs()){
@@ -177,9 +166,6 @@ public class MinesweeperController extends MenuController {
             }
         }
         isFirstClick = false;
-        long endTime = System.nanoTime();
-        System.out.println("total click: " + (endTime-startTime)/1000000);
-
     }
     public void showAllAround(int row, int col) {
         Node temp;
@@ -341,9 +327,10 @@ public class MinesweeperController extends MenuController {
         }
     }
     private void addNumbers(){
+        int nearbyBombs;
         for (int row = 0; row < GridSize; row++) {
             for (int col = 0; col < GridSize; col++) {
-                int nearbyBombs = numBombsNearby(row, col);
+                nearbyBombs = numBombsNearby(row, col);
                 if(nearbyBombs != 0) {
                     Text tempText = new Text("" + nearbyBombs);
                     tempText.setStyle("-fx-font-size : 20px; -fx-font-size: "+ (tileSize/2+2) +"px");
@@ -366,7 +353,7 @@ public class MinesweeperController extends MenuController {
                     rect.setFitHeight(tileSize);
                     rect.setFitWidth(tileSize);
 
-                    rect.setOpacity(.6);
+                    //rect.setOpacity(.6);
 
                     CoverSquareGridPane.add(rect, row, col);
                 }
