@@ -44,6 +44,7 @@ public class MinesweeperController extends MenuController {
     private long tileSize;
     private boolean safety = true;
     private boolean isFirstClick;
+    boolean godMode = false;
     private final Image squareImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Square.jpg")));
     private final Image flagImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/flag.png")));
 
@@ -68,12 +69,14 @@ public class MinesweeperController extends MenuController {
 
 
             final Menu menu2 = new Menu("Other");
+            CheckMenuItem gmode = new CheckMenuItem("God Mode");
             CheckMenuItem safe = new CheckMenuItem("Safety Off");
             MenuItem help = new MenuItem("Help");
 
+            gmode.setOnAction(event -> godMode());
             safe.setOnAction(event -> toggleSafety());
             help.setOnAction(event -> help());
-            menu2.getItems().addAll(safe, help);
+            menu2.getItems().addAll(gmode, safe, help);
 
             MenuBar menuBar = new MenuBar();
             menuBar.getMenus().addAll(menu1, menu2);
@@ -355,8 +358,8 @@ public class MinesweeperController extends MenuController {
 
                     rect.setFitHeight(tileSize);
                     rect.setFitWidth(tileSize);
-
-                    rect.setOpacity(.6);
+                    if(godMode)
+                        rect.setOpacity(.6);
 
                     CoverSquareGridPane.add(rect, row, col);
                 }
@@ -402,5 +405,23 @@ public class MinesweeperController extends MenuController {
     }
     public void help(){
         HelpMenu.setVisible(!HelpMenu.isVisible());
+    }
+    public void godMode(){
+        ObservableList<Node> children = CoverSquareGridPane.getChildren();
+        if(godMode){
+            for(Node node : children){
+                if(node instanceof ImageView) {
+                    int temp = MainArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)];
+                    if (temp != 0)
+                        node.setOpacity(1);
+                }
+            }
+        }
+        else{
+            for(Node node : children){
+                node.setOpacity(.6);
+            }
+        }
+        godMode = !godMode;
     }
 }
