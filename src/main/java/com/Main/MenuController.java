@@ -24,7 +24,6 @@ public class MenuController {
         stage.setScene(scene);
         stage.show();
     }
-
     public void swapToBlackjack(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/blackjack.fxml")));
         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -39,8 +38,7 @@ public class MenuController {
         stage.setScene(scene);
         stage.show();
     }
-
-    public void swapToMinesweeeper(ActionEvent event) throws IOException {
+    public void swapToMineSweeper(ActionEvent event) throws IOException {
         //Really cool way to have a menu on Mac, should pursue at a later date
 
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/fxml/minesweeper.fxml")));

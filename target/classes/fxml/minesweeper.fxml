@@ -13,7 +13,7 @@
       </GridPane>
     <GridPane fx:id="CoverSquareGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
        </GridPane>
-    <Rectangle fx:id="mainBox" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
+    <Rectangle fx:id="mainBox" arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="600.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
     <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0" visible="false">
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#bdbdbd" height="100.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
                <Text fx:id="finalText" layoutX="75.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You Win!" />

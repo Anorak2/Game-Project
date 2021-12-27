@@ -42,7 +42,7 @@ public class MinesweeperController extends MenuController {
     private boolean[][] MarkedSquares;
     private boolean locked;
     private long tileSize;
-    private boolean safety = true;
+    private boolean safety = false;
     private boolean isFirstClick;
     boolean godMode = false;
     private final Image squareImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/fxml/images/Square.jpg")));
@@ -69,14 +69,14 @@ public class MinesweeperController extends MenuController {
 
 
             final Menu menu2 = new Menu("Other");
-            CheckMenuItem gmode = new CheckMenuItem("God Mode");
+            CheckMenuItem gMode = new CheckMenuItem("God Mode");
             CheckMenuItem safe = new CheckMenuItem("Safety Off");
             MenuItem help = new MenuItem("Help");
 
-            gmode.setOnAction(event -> godMode());
+            gMode.setOnAction(event -> godMode());
             safe.setOnAction(event -> toggleSafety());
             help.setOnAction(event -> help());
-            menu2.getItems().addAll(gmode, safe, help);
+            menu2.getItems().addAll(gMode, safe, help);
 
             MenuBar menuBar = new MenuBar();
             menuBar.getMenus().addAll(menu1, menu2);
@@ -213,15 +213,16 @@ public class MinesweeperController extends MenuController {
         }
     }
     private int numBombsNearby(int row, int col){
-        int count = 0;
+        int count = 0, newRow, newCol;
+
         if(MainArray[row][col] != 1) {
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
-                    if (row + x < GridSize && row + x >= 0 && col + y < GridSize && col + y >= 0) {
-                        if (MainArray[row + x][col + y] == 1) {
-                            count++;
-                        }
-                    }
+                    newRow = row+x;
+                    newCol = col+y;
+                    if (newRow < GridSize && newRow >= 0 && newCol < GridSize && newCol >= 0 &&
+                            MainArray[newRow][newCol] == 1)
+                        count++;
                 }
             }
         }
