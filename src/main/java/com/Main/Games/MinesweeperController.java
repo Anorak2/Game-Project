@@ -28,7 +28,7 @@ public class MinesweeperController extends MenuController {
     @FXML
     GridPane MainGridPane, CoverSquareGridPane;
     @FXML
-    AnchorPane popUp, bigBoi, HelpMenu;
+    AnchorPane popUp, bigBoi, HelpMenu, text;
     @FXML
     Text finalText;
     @FXML
@@ -56,7 +56,8 @@ public class MinesweeperController extends MenuController {
         try {
             double pixelSize = 600.0;
 
-            final Menu menu1 = new Menu("size");
+            //Menu stuff
+                        final Menu menu1 = new Menu("size");
             MenuItem six = new MenuItem("6x6");
             MenuItem twelve = new MenuItem("12x12");
             MenuItem eighteen = new MenuItem("18x18");
@@ -132,6 +133,7 @@ public class MinesweeperController extends MenuController {
     }
 
     public void click(Boolean isLeftClick, double row, double col) {
+        long startTime = System.nanoTime();
         int GridRow = (int) (row / tileSize);
         int GridCol = (int) (col / tileSize);
         if(isFirstClick && safety){
@@ -168,6 +170,8 @@ public class MinesweeperController extends MenuController {
             }
         }
         isFirstClick = false;
+        long endTime = System.nanoTime();
+        System.out.println((endTime - startTime)/ 1000000);
     }
     public void showAllAround(int row, int col) {
         Node temp;
@@ -212,16 +216,28 @@ public class MinesweeperController extends MenuController {
             MainArray[row][col] = 0;
         }
     }
+    @SuppressWarnings("ConstantConditions")
     private int numBombsNearby(int row, int col){
         int count = 0, newRow, newCol;
 
-        if(MainArray[row][col] != 1) {
+        if(MainArray[row][col] == 1)
+            return 0;
+
+        if(row == 0 || row == GridSize-1 || col == 0 || col == GridSize-1) {
             for (int x = -1; x < 2; x++) {
                 for (int y = -1; y < 2; y++) {
-                    newRow = row+x;
-                    newCol = col+y;
+                    newRow = row + x;
+                    newCol = col + y;
                     if (newRow < GridSize && newRow >= 0 && newCol < GridSize && newCol >= 0 &&
                             MainArray[newRow][newCol] == 1)
+                        count++;
+                }
+            }
+        }
+        else {
+            for (int x = -1; x < 2; x++) {
+                for (int y = -1; y < 2; y++) {
+                    if (MainArray[row + x][col + y] == 1)
                         count++;
                 }
             }
@@ -339,12 +355,14 @@ public class MinesweeperController extends MenuController {
             for (int col = 0; col < GridSize; col++) {
                 nearbyBombs = numBombsNearby(row, col);
                 if(nearbyBombs != 0) {
-                    Text tempText = new Text("" + nearbyBombs);
+                    Text tempText = new Text(row*tileSize, col*tileSize, "" + nearbyBombs);
+                    //Text tempText = new Text("" + nearbyBombs);
                     tempText.setStyle("-fx-font-size : 20px; -fx-font-size: "+ (tileSize/2+2) +"px");
                     GridPane.setHalignment(tempText, HPos.CENTER);
 
                     MainArray[row][col] = 2;
                     MainGridPane.add(tempText, col, row);
+                    //text.getChildren().add(tempText);
                 }
             }
         }

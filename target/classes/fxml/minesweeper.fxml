@@ -11,6 +11,8 @@
     <BorderPane fx:id="Menu" prefHeight="200.0" prefWidth="200.0" visible="false" />
     <GridPane fx:id="MainGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
       </GridPane>
+    <AnchorPane fx:id="text" prefHeight="600" prefWidth="600">
+    </AnchorPane>
     <GridPane fx:id="CoverSquareGridPane" alignment="CENTER" prefHeight="600.0" prefWidth="600.0">
        </GridPane>
     <Rectangle fx:id="mainBox" arcHeight="5.0" arcWidth="5.0" fill="BLUE" height="600.0" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" width="600.0" />
