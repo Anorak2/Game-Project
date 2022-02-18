@@ -209,6 +209,7 @@ public class CheckersController extends MenuController {
     }
     private double findBestMove(Piece[][] board, boolean isBlack, int depth, boolean isMultiCapture) {
         Piece[][] tempBoard = new Piece[8][8];
+        int maxDepth = 2;
         for (int z = 0; z < 8; z++)
             System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
         ArrayList<Double> scores = new ArrayList<>();
@@ -219,7 +220,7 @@ public class CheckersController extends MenuController {
             for (int x = 0; x < allMovesBlack.size(); x++) {
                 allMovesBlack = findAllBlackMoves(tempBoard);
                 movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
-                //MultiCapture
+                //MultiCapture, my "solution" of adding depth majorly sucks and it is bad coding practice but I just want it to work
                 if (canCapture(tempBoard, allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]))
                     scores.add(x, findBestMove(tempBoard, true, depth, true));
                 else
@@ -254,7 +255,7 @@ public class CheckersController extends MenuController {
         }
         else {
             ArrayList<int[]> allMovesRed = findAllRedMoves(tempBoard);
-            if (depth >= 3) {
+            if (depth >= maxDepth) {
                 for (int x = 0; x < allMovesRed.size(); x++) {
                     movePiece(tempBoard, allMovesRed.get(x)[0], allMovesRed.get(x)[1], allMovesRed.get(x)[2], allMovesRed.get(x)[3]);
                     //MultiCapture
