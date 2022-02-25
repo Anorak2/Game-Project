@@ -7,8 +7,9 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
@@ -61,9 +62,9 @@ public class BlackjackController extends MenuController {
     @FXML
     AnchorPane AnchorPane;
 
-    private ArrayList<Card> deck = new ArrayList<>();
-    private ArrayList<Card> player = new ArrayList<>();
-    private ArrayList<Card> dealer = new ArrayList<>();
+    private final ArrayList<Card> deck = new ArrayList<>();
+    private final ArrayList<Card> player = new ArrayList<>();
+    private final ArrayList<Card> dealer = new ArrayList<>();
     private Boolean Stand = false;
     private ImageView PlayerBot;
     private ImageView DealerBot;
@@ -81,6 +82,7 @@ public class BlackjackController extends MenuController {
         Stand = false;
         PlayerBottomNum.setX(0);
         DealerBottomNum.setX(0);
+
         for (int x = 2; x < 15; x++)
             deck.add(new Card("Spade", x));
         for (int x = 2; x < 15; x++)
@@ -93,6 +95,7 @@ public class BlackjackController extends MenuController {
         WinnerText.setText("");
         DrawPlayer();
         DrawPlayer();
+
     }
 
     public void DrawPlayer(){
@@ -240,6 +243,17 @@ public class BlackjackController extends MenuController {
         }
         DealerBottomNum.setVisible(true);
         DealerBottomNum.setX(25 * (dealer.size()-1));
+    }
+
+    @FXML
+    private void onKeyPressed(KeyEvent key){
+        try {
+            if (key.getCode().equals(KeyCode.ESCAPE))
+                exit();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void winner(String x){

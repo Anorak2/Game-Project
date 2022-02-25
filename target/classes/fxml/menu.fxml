@@ -8,35 +8,40 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="150.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.MenuController">
-   <children>
-      <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="400.0" prefWidth="150.0" vbarPolicy="NEVER">
-         <content>
-            <AnchorPane prefHeight="400.0" prefWidth="150.0">
-               <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="400.0" stroke="BLACK" strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
-                  <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/Icons/CardIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/Icons/CheckersIcon.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="10.0" layoutY="107.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/Icons/MinesweeperIcon.png" />
-                     </image>
-                  </ImageView>
-                  <Button layoutY="50.0" mnemonicParsing="false" onAction="#swapToCheckers" prefHeight="50.0" prefWidth="160.0" style="-fx-background-color: transparent;" text="Checkers" />
-                  <Button contentDisplay="CENTER" layoutX="-1.0" layoutY="100.0" mnemonicParsing="false" onAction="#swapToMineSweeper" prefHeight="50.0" prefWidth="161.0" style="-fx-background-color: transparent;" text="         MineSweeper" />
-                  <Button mnemonicParsing="false" onAction="#swapToBlackjack" prefHeight="50.0" prefWidth="160.0" style="-fx-background-color: transparent;" text="Blackjack" />
-                  <Line endX="85.0" layoutX="32.5" layoutY="100.0" stroke="#0000004c" />
-                  <Line endX="85.0" layoutX="32.5" layoutY="50.0" stroke="#0000004c" />
-               </children>
-            </AnchorPane>
-         </content></ScrollPane>
-   </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="150.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.Main.MenuController">
+   <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="400.0" prefWidth="150.0" vbarPolicy="NEVER">
+      <AnchorPane prefHeight="400.0" prefWidth="150.0">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="400.0" stroke="BLACK"
+                       strokeMiterLimit="0.0" strokeType="INSIDE" strokeWidth="0.0" width="150.0"/>
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="8.0" pickOnBounds="true"
+                       preserveRatio="true">
+               <image>
+                  <Image url="@images/Icons/CardIcon.png"/>
+               </image>
+            </ImageView>
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="8.0" layoutY="58.0" pickOnBounds="true"
+                       preserveRatio="true">
+               <image>
+                  <Image url="@images/Icons/CheckersIcon.png"/>
+               </image>
+            </ImageView>
+            <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="10.0" layoutY="107.0" pickOnBounds="true"
+                       preserveRatio="true">
+               <image>
+                  <Image url="@images/Icons/MinesweeperIcon.png"/>
+               </image>
+            </ImageView>
+            <Button layoutY="50.0" mnemonicParsing="false" onAction="#swapToCheckers" prefHeight="50.0"
+                    prefWidth="160.0" style="-fx-background-color: transparent;" text="Checkers"/>
+            <Button contentDisplay="CENTER" layoutX="-1.0" layoutY="100.0" mnemonicParsing="false"
+                    onAction="#swapToMineSweeper" prefHeight="50.0" prefWidth="161.0"
+                    style="-fx-background-color: transparent;" text="         MineSweeper"/>
+            <Button mnemonicParsing="false" onAction="#swapToBlackjack" prefHeight="50.0" prefWidth="160.0"
+                    style="-fx-background-color: transparent;" text="Blackjack"/>
+            <Line endX="85.0" layoutX="32.5" layoutY="100.0" stroke="#0000004c"/>
+            <Line endX="85.0" layoutX="32.5" layoutY="50.0" stroke="#0000004c"/>
+      </AnchorPane>
+   </ScrollPane>
 </AnchorPane>

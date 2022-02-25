@@ -6,7 +6,6 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="AnchorPane" maxHeight="400.0" maxWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Main.Games.BlackjackController">
-   <children>
       <Rectangle fill="DARKGREEN" height="400.0" layoutX="1.0" layoutY="1.0" stroke="BLACK" strokeWidth="2.0" width="600.0" />
       <Button layoutX="2.0" layoutY="2.0" mnemonicParsing="false" onAction="#swapToMenu" style="-fx-background-color: darkgreen;" text="Menu" />
       <Button fx:id="StandButton" layoutX="329.0" layoutY="300.0" mnemonicParsing="false" onAction="#StandPlayer" text="Stand" />
@@ -43,5 +42,4 @@
       <Text fx:id="DealerText7" layoutX="382.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" />
       <Text fx:id="PlayerBottomNum" layoutX="264.0" layoutY="273.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" />
       <Text fx:id="DealerBottomNum" layoutX="264.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A" />
-   </children>
 </AnchorPane>
