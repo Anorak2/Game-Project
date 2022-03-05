@@ -69,6 +69,24 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>17.0.2</version>
+                <classifier>win</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>17.0.2</version>
+                <classifier>linux</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>17.0.2</version>
+                <classifier>mac</classifier>
+            </dependency>
     </dependencies>
 
     <build>
@@ -91,7 +109,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.Main.Main</mainClass>
+                            <mainClass>com.Main.FakeMain</mainClass>
                         </configuration>
                     </execution>
                 </executions>

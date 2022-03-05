@@ -14,6 +14,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,13 +40,14 @@ public class CheckersController extends MenuController {
             isKing = true;
         }
     }
-    private class Algorithm implements Runnable{
+
+    private class Algorithm implements Runnable {
         private final Piece[][] boardT;
         private final boolean isBlackT;
         private final int depthT;
         private final int num;
 
-        public Algorithm(Piece[][] board, boolean isBlack, int depth, int num){
+        public Algorithm(Piece[][] board, boolean isBlack, int depth, int num) {
             this.boardT = board;
             this.isBlackT = isBlack;
             this.depthT = depth;
@@ -72,6 +74,10 @@ public class CheckersController extends MenuController {
 
 
             if (isBlack) {
+                double check = evaluatePosition(board, allMovesBlack.size());
+                if(check == 999999 || check == -999999)
+                    return check;
+
                 for (int x = 0; x < allMovesBlack.size(); x++) {
                     allMovesBlack = findAllBlackMoves(tempBoard);
                     movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
@@ -94,13 +100,19 @@ public class CheckersController extends MenuController {
                                 lowest = x;
                         }
                     }
-                    if (highest == lowest)
+                    if (Objects.equals(scores.get(highest), scores.get(lowest)))
                         index = (int) (Math.random() * allMovesBlack.size());
                     else
                         index = highest;
                 }
-            } else {
+            }
+            else {
                 ArrayList<int[]> allMovesRed = findAllRedMoves(tempBoard);
+
+                double check = evaluatePosition(board, allMovesRed.size());
+                if(check == 999999 || check == -999999)
+                    return check;
+
                 if (depth == maxDepth) {
                     for (int x = 0; x < allMovesRed.size(); x++) {
                         allMovesRed = findAllRedMoves(tempBoard);
@@ -108,12 +120,14 @@ public class CheckersController extends MenuController {
                         //MultiCapture
                         if (canCapture(tempBoard, allMovesRed.get(x)[2], allMovesRed.get(x)[3]))
                             scores.add(x, findBestMove(tempBoard, false, depth));
-                        else
-                            scores.add(x, evaluatePosition(board, allMovesRed.size()));
+                        else {
+                            scores.add(x, simpleEvaluate(board));
+                            //scores.add(x, evaluatePosition(board, allMovesRed.size()));
+                        }
                         for (int z = 0; z < 8; z++)
                             System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
                     }
-                    //Returning highest rated move
+                    //Returning lowest rated move
                     if (!allMovesRed.isEmpty()) {
                         int highest = 0;
                         int lowest = 0;
@@ -129,10 +143,10 @@ public class CheckersController extends MenuController {
                             index = (int) (Math.random() * allMovesRed.size());
                         else
                             index = lowest;
-                        return scores.get(index);
                     }
 
-                } else {
+                }
+                else {
                     for (int x = 0; x < allMovesRed.size(); x++) {
                         movePiece(tempBoard, allMovesRed.get(x)[0], allMovesRed.get(x)[1], allMovesRed.get(x)[2], allMovesRed.get(x)[3]);
                         //MultiCapture
@@ -143,10 +157,29 @@ public class CheckersController extends MenuController {
                         for (int z = 0; z < 8; z++)
                             System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
                     }
+                    //Returning lowest rated move
+                    if (!allMovesRed.isEmpty()) {
+                        int highest = 0;
+                        int lowest = 0;
+                        if (allMovesRed.size() > 1) {
+                            for (int x = 1; x < scores.size(); x++) {
+                                if (scores.get(x) >= scores.get(highest))
+                                    highest = x;
+                                else if (scores.get(x) < scores.get(lowest))
+                                    lowest = x;
+                            }
+                        }
+                        if (Objects.equals(scores.get(highest), scores.get(lowest)))
+                            index = (int) (Math.random() * allMovesRed.size());
+                        else
+                            index = lowest;
+                    }
                 }
             }
+
             return scores.get(index);
         }
+
         private double evaluatePosition(Piece[][] board, int amountOfMoves) {
             // How the algo works:
             //If pieces are all gone it is either good or bad position
@@ -163,38 +196,38 @@ public class CheckersController extends MenuController {
                 return 999999;
             else if (pieceCount[1] == 0)
                 return -999999;
-            else if(amountOfMoves == 0)
-                return  -999999;
-            //if the score is higher than better position
-            /*
-            if (scores[0] > scores[1])
-                positionScoreForBlack -= 20;
-            else if (scores[0] < scores[1])
-                positionScoreForBlack += 20;
-             */
+            else if (amountOfMoves == 0)
+                return -999999;
             positionScoreForBlack += (scores[1] - scores[0]) * 7.5;
 
+            positionScoreForBlack -= pieceCount[0] * .5;
+
             //This takes into account the distance to becoming royalty
-            int blackDistance = 0 , redDistance = 0;
-            for(int x = 0; x < 8; x++){
-                for(int y = 0; y < 8; y++){
-                    if(board[x][y] != null && !board[x][y].isKing) {
+            int blackDistance = 0, redDistance = 0;
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y] != null && !board[x][y].isKing) {
                         if (board[x][y].color.equals("Black"))
-                            blackDistance += (6 - x);
+                            blackDistance += x;
                         else
-                            redDistance  += (x-1);
+                            redDistance += (7 - x);
                     }
                 }
             }
-            if(blackDistance > redDistance)
+            if (blackDistance > redDistance)
                 positionScoreForBlack += 3;
             else if (blackDistance < redDistance)
                 positionScoreForBlack -= 3;
 
 
-            positionScoreForBlack += (Math.random()*5)-2.5;
+            positionScoreForBlack += (Math.random() * 3) - 1.5;
 
             return positionScoreForBlack;
+        }
+
+        private double simpleEvaluate(Piece[][] board) {
+            int[] scores = getScores(board);
+            return (scores[0] - scores[1]) * 5;
         }
 
         //Used to calculate all possible moves for the bot
@@ -311,6 +344,7 @@ public class CheckersController extends MenuController {
             }
             return moves;
         }
+
         private ArrayList<int[]> findAllRedMoves(Piece[][] board) {
             ArrayList<int[]> moves = new ArrayList<>();
             int[] temp = new int[4];
@@ -411,10 +445,44 @@ public class CheckersController extends MenuController {
             }
             return moves;
         }
+
+        //some helper methods for evaluatePosition, red then black to avoid code duplication
+        private int[] countAll(Piece[][] board) {
+            int red = 0;
+            int black = 0;
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y] != null && board[x][y].getColor().equals("Red"))
+                        red++;
+                    if (board[x][y] != null && board[x][y].getColor().equals("Black"))
+                        black++;
+                }
+            }
+            return new int[]{red, black};
+        }
+
+        private int[] getScores(Piece[][] board) {
+            int red = 0;
+            int black = 0;
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    if (board[x][y] != null && board[x][y].getColor().equals("Red")) {
+                        if (board[x][y].isKing())
+                            red += 5;
+                        else
+                            red += 3;
+                    }
+                    if (board[x][y] != null && board[x][y].getColor().equals("Black")) {
+                        if (board[x][y].isKing())
+                            black += 5;
+                        else
+                            black += 3;
+                    }
+                }
+            }
+            return new int[]{red, black};
+        }
     }
-
-
-
 
 
     @FXML
@@ -441,7 +509,7 @@ public class CheckersController extends MenuController {
     }
 
 
-    private int[] startAI(Piece[][] board){
+    private int[] startAI(Piece[][] board) {
         ArrayList<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
         Piece[][] tempBoard = new Piece[8][8];
         int[] finished = new int[4];
@@ -466,9 +534,9 @@ public class CheckersController extends MenuController {
             es.shutdown();
             boolean thing = es.awaitTermination(4, TimeUnit.MINUTES);
 
-            if(!thing)
+            if (!thing)
                 throw new Exception();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (!allMovesBlack.isEmpty()) {
@@ -487,12 +555,13 @@ public class CheckersController extends MenuController {
                 index = highest;
         }
 
-        if(allMovesBlack.size() > 0)
+        if (allMovesBlack.size() > 0)
             System.arraycopy(allMovesBlack.get(index), 0, finished, 0, allMovesBlack.get(index).length);
         System.out.println(Arrays.toString(eval));
         System.out.println(eval[index]);
         return finished;
     }
+
     private void crappyAi() {
         Task<Void> sleeper = new Task<>() {
             @Override
@@ -516,8 +585,8 @@ public class CheckersController extends MenuController {
 
 
             movePiece(MainBoard, done[0], done[1], done[2], done[3]);
-            if((done[1]+2 == done[3] || done[1]-2 == done[3]) && canCapture(MainBoard, done[2], done[3])){
-                    crappyAi();
+            if ((done[1] + 2 == done[3] || done[1] - 2 == done[3]) && canCapture(MainBoard, done[2], done[3])) {
+                crappyAi();
             }
             //Promotion
             if (done[2] == 7) {
@@ -797,6 +866,7 @@ public class CheckersController extends MenuController {
         }
         return moves;
     }
+
     private ArrayList<int[]> findAllRedMoves(Piece[][] board) {
         ArrayList<int[]> moves = new ArrayList<>();
         int[] temp = new int[4];
@@ -898,20 +968,7 @@ public class CheckersController extends MenuController {
         return moves;
     }
 
-    //some helper methods for evaluatePosition, red then black to avoid code duplication
-    private int[] countAll(Piece[][] board) {
-        int red = 0;
-        int black = 0;
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                if (board[x][y] != null && board[x][y].getColor().equals("Red"))
-                    red++;
-                if (board[x][y] != null && board[x][y].getColor().equals("Black"))
-                    black++;
-            }
-        }
-        return new int[]{red, black};
-    }
+
     private int[] getScores(Piece[][] board) {
         int red = 0;
         int black = 0;
@@ -931,7 +988,7 @@ public class CheckersController extends MenuController {
                 }
             }
         }
-        return new int[] {red, black};
+        return new int[]{red, black};
     }
     private void checkWinner() {
         ArrayList<int[]> blackMoves = findAllBlackMoves(MainBoard);
@@ -945,6 +1002,7 @@ public class CheckersController extends MenuController {
             winner("T");
         }
     }
+
     private void winner(String s) {
         popUp.setVisible(true);
         lockMove = true;
@@ -954,6 +1012,7 @@ public class CheckersController extends MenuController {
             finalText.setText("You Lose!");
         }
     }
+
     private void move(int rowInput, int columnInput) {
         if (!lockMove) {
             if (rowInput1 == -1 && colInput1 == -1) {
@@ -996,11 +1055,13 @@ public class CheckersController extends MenuController {
         }
         checkWinner();
     }
+
     public void mouseClick(MouseEvent e) {
         int row = (int) e.getSceneY() / 75;
         int col = (int) e.getSceneX() / 75;
         move(row, col);
     }
+
     private boolean isMoveLegal(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2) {
         //bounds detection
         if ((rowInput1 < 0 || colInput1 > 7) || (rowInput2 < 0 || colInput2 > 7))
@@ -1010,8 +1071,8 @@ public class CheckersController extends MenuController {
             return false;
         else if (board[rowInput2][colInput2] != null)
             return false;
-            //logic for king
-        else if (board[rowInput1][colInput1].isKing()) {
+        //logic for king
+        if (board[rowInput1][colInput1].isKing()) {
             if (rowInput1 - 1 == rowInput2 && colInput1 + 1 == colInput2 && (board[rowInput1 - 1][colInput1 + 1] == null)) {
                 return true;
             } else if (rowInput1 - 1 == rowInput2 && colInput1 - 1 == colInput2 && (board[rowInput1 - 1][colInput1 - 1] == null)) {
@@ -1058,15 +1119,16 @@ public class CheckersController extends MenuController {
                 return true;
             }
             //Jumping Logic
-            else if (rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2) {
-                return board[rowInput1 + 1][colInput1 + 1] != null && board[rowInput1 + 1][colInput1 + 1].getColor().equals("Red");
-            } else if (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2) {
-                return board[rowInput1 + 1][colInput1 - 1] != null && board[rowInput1 + 1][colInput1 - 1].getColor().equals("Red");
+            else if (rowInput1 + 2 == rowInput2 && colInput1 + 2 == colInput2 && board[rowInput1 + 1][colInput1 + 1] != null) {
+                return board[rowInput1 + 1][colInput1 + 1].getColor().equals("Red");
+            } else if (rowInput1 + 2 == rowInput2 && colInput1 - 2 == colInput2 && board[rowInput1 + 1][colInput1 - 1] != null ) {
+                return board[rowInput1 + 1][colInput1 - 1].getColor().equals("Red");
             }
         }
         return false;
 
     }
+
     private void movePiece(Piece[][] board, int row, int column, int newRow, int newCol) {
         if (row - 2 == newRow && column + 2 == newCol) {
             board[row - 1][column + 1] = null;
@@ -1081,6 +1143,7 @@ public class CheckersController extends MenuController {
         board[row][column] = null;
         board[newRow][newCol] = temp;
     }
+
     public boolean canCapture(Piece[][] board, int row1, int col1) {
         if (row1 + 2 < 8 && col1 + 2 < 8 && isMoveLegal(board, row1, col1, row1 + 2, col1 + 2))
             return true;
@@ -1091,6 +1154,7 @@ public class CheckersController extends MenuController {
         else
             return row1 - 2 >= 0 && col1 - 2 >= 0 && isMoveLegal(board, row1, col1, row1 - 2, col1 - 2);
     }
+
     private void displayBoard() {
         PieceAnchorPane.getChildren().clear();
 
@@ -1130,6 +1194,7 @@ public class CheckersController extends MenuController {
             }
         }
     }
+
     private void setStarterBoard() {
         MainBoard[7][0] = new Piece("Red");
         MainBoard[7][2] = new Piece("Red");
@@ -1159,12 +1224,12 @@ public class CheckersController extends MenuController {
     }
 
     @FXML
-    public void onKeyPressed(KeyEvent key){
+    public void onKeyPressed(KeyEvent key) {
         try {
             if (key.getCode().equals(KeyCode.ENTER))
                 exit();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
