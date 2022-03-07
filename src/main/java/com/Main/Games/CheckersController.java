@@ -94,15 +94,15 @@ public class CheckersController extends MenuController {
                     int highest = 0, lowest = 0;
                     if (allMovesBlack.size() > 1) {
                         for (int x = 1; x < scores.size(); x++) {
-                            if (scores.get(x) >= scores.get(highest))
+                            if (scores.get(x) > scores.get(highest))
                                 highest = x;
                             else if (scores.get(x) < scores.get(lowest))
                                 lowest = x;
                         }
                     }
-                    if (Objects.equals(scores.get(highest), scores.get(lowest)))
-                        index = (int) (Math.random() * allMovesBlack.size());
-                    else
+                    //if (Objects.equals(scores.get(highest), scores.get(lowest)))
+                    //    index = (int) (Math.random() * allMovesBlack.size());
+                    //else
                         index = highest;
                 }
             }
@@ -133,15 +133,15 @@ public class CheckersController extends MenuController {
                         int lowest = 0;
                         if (allMovesRed.size() > 1) {
                             for (int x = 1; x < scores.size(); x++) {
-                                if (scores.get(x) >= scores.get(highest))
+                                if (scores.get(x) > scores.get(highest))
                                     highest = x;
                                 else if (scores.get(x) < scores.get(lowest))
                                     lowest = x;
                             }
                         }
-                        if (highest == lowest)
-                            index = (int) (Math.random() * allMovesRed.size());
-                        else
+                        //if (highest == lowest)
+                        //    index = (int) (Math.random() * allMovesRed.size());
+                        //else
                             index = lowest;
                     }
 
@@ -163,15 +163,15 @@ public class CheckersController extends MenuController {
                         int lowest = 0;
                         if (allMovesRed.size() > 1) {
                             for (int x = 1; x < scores.size(); x++) {
-                                if (scores.get(x) >= scores.get(highest))
+                                if (scores.get(x) > scores.get(highest))
                                     highest = x;
                                 else if (scores.get(x) < scores.get(lowest))
                                     lowest = x;
                             }
                         }
-                        if (Objects.equals(scores.get(highest), scores.get(lowest)))
-                            index = (int) (Math.random() * allMovesRed.size());
-                        else
+                        //if (Objects.equals(scores.get(highest), scores.get(lowest)))
+                        //    index = (int) (Math.random() * allMovesRed.size());
+                        //else
                             index = lowest;
                     }
                 }
@@ -220,14 +220,14 @@ public class CheckersController extends MenuController {
                 positionScoreForBlack -= 3;
 
 
-            positionScoreForBlack += (Math.random() * 3) - 1.5;
+            //positionScoreForBlack += (Math.random() * 3) - 1.5;
 
             return positionScoreForBlack;
         }
 
         private double simpleEvaluate(Piece[][] board) {
             int[] scores = getScores(board);
-            return (scores[0] - scores[1]) * 5;
+            return (scores[1] - scores[0]) * 5;
         }
 
         //Used to calculate all possible moves for the bot
@@ -549,9 +549,9 @@ public class CheckersController extends MenuController {
                         lowest = x;
                 }
             }
-            if (highest == lowest)
-                index = (int) (Math.random() * allMovesBlack.size());
-            else
+            //if (highest == lowest)
+            //    index = (int) (Math.random() * allMovesBlack.size());
+            //else
                 index = highest;
         }
 
