@@ -53,9 +53,9 @@ public class CheckersController extends MenuController {
         public void run() {
             int maxDepth;
             int[] count = countAll(boardT);
-            if(count[0] + count[1] >= 15)
+            if(count[0] + count[1] >= 13)
                 maxDepth = 7;
-            else if (count[0] + count[1] >= 10)
+            else if (count[0] + count[1] >= 8)
                 maxDepth = 8;
             else
                 maxDepth = 9;
@@ -66,19 +66,16 @@ public class CheckersController extends MenuController {
         //The recursive backtracking methods
         //The bane of my existence
         private synchronized double findBestMove(Piece[][] board, boolean isBlack, int depth, int maxDepth){
-            Piece[][] tempBoard = new Piece[8][8];
+            Piece[][] tempBoard;
             int index;
 
 
-            for (int z = 0; z < 8; z++) {
-                System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
-            }
             ArrayList<Double> scores;
             if(depth == maxDepth)
                 return evaluatePosition(board);
 
 
-            double check = evaluatePosition(tempBoard);
+            double check = evaluatePosition(board);
             if(check == 999999 || check == -999999)
                 return check;
 
@@ -87,6 +84,10 @@ public class CheckersController extends MenuController {
                 List<int[]> allMovesBlack = findAllBlackMoves(board);
                 scores = new ArrayList<>(allMovesBlack.size());
                 for (int[] ints : allMovesBlack) {
+                    tempBoard = new Piece[8][8];
+                    for (int z = 0; z < 8; z++) {
+                        System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
+                    }
                     movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
                     //MultiCapture
                     //Checks if the last move was a capture and if we can capture again
@@ -96,16 +97,17 @@ public class CheckersController extends MenuController {
                     }else{
                         scores.add(findBestMove(tempBoard, false, depth+1, maxDepth));
                     }
-                    for (int z = 0; z < 8; z++) {
-                        System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
-                    }
                 }
             }
             else {
-                List<int[]> allMovesRed = findAllRedMoves(tempBoard);
+                List<int[]> allMovesRed = findAllRedMoves(board);
                 scores = new ArrayList<>(allMovesRed.size());
 
                 for (int[] ints : allMovesRed) {
+                    tempBoard = new Piece[8][8];
+                    for (int z = 0; z < 8; z++) {
+                        System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
+                    }
                     movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
                     //MultiCapture
                     //Checks if the last move was a capture and if we can capture again
@@ -115,10 +117,6 @@ public class CheckersController extends MenuController {
                     }
                     else{
                         scores.add(findBestMove(tempBoard, true, depth + 1, maxDepth));
-                    }
-                    tempBoard = new Piece[8][8];
-                    for (int z = 0; z < 8; z++) {
-                        System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
                     }
                 }
 
