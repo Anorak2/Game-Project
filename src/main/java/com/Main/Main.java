@@ -39,14 +39,14 @@ public class Main extends Application {
                 synchronized (c) {
                     c.moveOnBoard(5, 4, 4, 3);
                     startTime = System.nanoTime();
-                    c.crappyAi();
+                    c.algoShell();
                     total += (System.nanoTime() - startTime) / 1000000;
                 }
                 System.out.println("x");
                 synchronized (c) {
                     c.moveOnBoard(5, 6, 4, 5);
                     startTime = System.nanoTime();
-                    c.crappyAi();
+                    c.algoShell();
                     total += (System.nanoTime() - startTime) / 1000000;
                 }
             }catch (Exception e){

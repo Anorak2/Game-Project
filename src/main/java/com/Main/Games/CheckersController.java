@@ -52,13 +52,23 @@ public class CheckersController extends MenuController {
         @Override
         public void run() {
             int maxDepth;
-            int[] count = countAll(boardT);
-            if(count[0] + count[1] >= 13)
+
+            if(numberOfMoves >= 21) {
+                System.out.println(6);
+                maxDepth = 6;
+            }
+            else if(numberOfMoves > 13) {
+                System.out.println(7);
                 maxDepth = 7;
-            else if (count[0] + count[1] >= 8)
+            }
+            else if (numberOfMoves > 8) {
+                System.out.println(8);
                 maxDepth = 8;
-            else
+            }
+            else{
+                System.out.println(9);
                 maxDepth = 9;
+            }
 
             eval[num] = findBestMove(boardT, isBlackT, 0, maxDepth);
         }
@@ -68,60 +78,43 @@ public class CheckersController extends MenuController {
         private synchronized double findBestMove(Piece[][] board, boolean isBlack, int depth, int maxDepth){
             Piece[][] tempBoard;
             int index;
-
-
+            List<int[]> allMoves;
             ArrayList<Double> scores;
+
+            // The exit clause
             if(depth == maxDepth)
                 return evaluatePosition(board);
 
-
-            double check = evaluatePosition(board);
+            // Exit if the game is won or lost
+            double check = simpleEvaluate(board);
             if(check == 999999 || check == -999999)
                 return check;
 
-
+            //---------- Main Logic ----------
             if (isBlack) {
-                List<int[]> allMovesBlack = findAllBlackMoves(board);
-                scores = new ArrayList<>(allMovesBlack.size());
-                for (int[] ints : allMovesBlack) {
-                    tempBoard = new Piece[8][8];
-                    for (int z = 0; z < 8; z++) {
-                        System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
-                    }
-                    movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
-                    //MultiCapture
-                    //Checks if the last move was a capture and if we can capture again
-                    if (isCapture(ints[0], ints[1], ints[2], ints[3]) && canCapture(tempBoard, ints[2], ints[3])) {
-                        scores.add(findBestMove(tempBoard, true, depth+1, maxDepth));
-                        //scores.add(findBestMoveMultiCapture(tempBoard, true, depth));
-                    }else{
-                        scores.add(findBestMove(tempBoard, false, depth+1, maxDepth));
-                    }
-                }
+                allMoves = findAllBlackMoves(board);
             }
             else {
-                List<int[]> allMovesRed = findAllRedMoves(board);
-                scores = new ArrayList<>(allMovesRed.size());
-
-                for (int[] ints : allMovesRed) {
-                    tempBoard = new Piece[8][8];
-                    for (int z = 0; z < 8; z++) {
-                        System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
-                    }
-                    movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
-                    //MultiCapture
-                    //Checks if the last move was a capture and if we can capture again
-                    if (isCapture(ints[0], ints[1], ints[2], ints[3]) && canCapture(tempBoard, ints[2], ints[3])) {
-                        //scores.add(findBestMoveMultiCapture(tempBoard, false, depth));
-                        scores.add(findBestMove(tempBoard, false, depth+1, maxDepth));
-                    }
-                    else{
-                        scores.add(findBestMove(tempBoard, true, depth + 1, maxDepth));
-                    }
-                }
-
-                //Returning lowest rated move
+                allMoves = findAllRedMoves(board);
             }
+            scores = new ArrayList<>(allMoves.size());
+            for (int[] ints : allMoves) {
+                tempBoard = new Piece[8][8];
+                for (int z = 0; z < 8; z++) {
+                    System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
+                }
+                movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
+                //MultiCapture
+                //Checks if the last move was a capture and if we can capture again
+                if (isCapture(ints[0], ints[1], ints[2], ints[3]) && canCapture(tempBoard, ints[2], ints[3])) {
+                    scores.add(findBestMove(tempBoard, isBlack, depth+1, maxDepth));
+                }
+                else{
+                    scores.add(findBestMove(tempBoard, !isBlack, depth + 1, maxDepth));
+                }
+            }
+
+            //---------- Returning optimal move ----------
             int highest = 0, lowest = 0;
             int loopStorage = scores.size();
             for (int x = 1; x < loopStorage; x++) {
@@ -165,9 +158,8 @@ public class CheckersController extends MenuController {
                 return 999999;
 
             // difference in score x10 to emphasize importance of score
-            positionScoreForBlack += ((scores[1] - scores[0]) * 4.5);
+            positionScoreForBlack += (scores[1] - scores[0]) * 4.5;
 
-            //positionScoreForBlack -= pieceCount[0] * .5;
 
             //This takes into account the distance to becoming royalty
             /*
@@ -194,21 +186,22 @@ public class CheckersController extends MenuController {
 
             return positionScoreForBlack;
         }
-        private double simpleEvaluate(Piece[][] board, int amountOfMoves){
-            int[] scores = getScores(board);
+
+
+        // This method is used to check if the game is over in a much more optimal way
+        private double simpleEvaluate(Piece[][] board){
             int[] pieceCount = countAll(board);
 
-
-            //if all pieces are gone then it's either a fantastic or horrible position
             if (pieceCount[0] == 0)
                 return 999999;
             else if (pieceCount[1] == 0)
                 return -999999;
-            else if (amountOfMoves == 0)
+            else if (findAllBlackMoves(board).size() == 0)
                 return -999999;
+            else if (findAllRedMoves(board).size() == 0)
+                return 999999;
 
-            return ((scores[1] - scores[0]) * 10);
-            //return 4;
+            return 0;
         }
 
         //Finding moves, duh
@@ -408,94 +401,6 @@ public class CheckersController extends MenuController {
             }
             return moves;
         }
-        private int[] findCapture(Piece[][] tempBoard, boolean isBlack){
-            int[] thing = new int[4];
-            for(int row = 0; row < 8; row++) {
-                for(int col = 0; col < 8; col++) {
-                    if(tempBoard[row][col] != null) {
-                        if (tempBoard[row][col].isKing()) {
-                            //jumping
-                            if ((row + 2 <= 7) && (col - 2 >= 0) && isMoveLegal(tempBoard, row, col, row + 2, col - 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row + 2;
-                                thing[3] = col - 2;
-                            }
-                            if ((row + 2 <= 7) && (col + 2 <= 7) && isMoveLegal(tempBoard, row, col, row + 2, col + 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row + 2;
-                                thing[3] = col + 2;
-                            }
-                            if ((row - 2 >= 0) && (col - 2 >= 0) && isMoveLegal(tempBoard, row, col, row - 2, col - 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row - 2;
-                                thing[3] = col - 2;
-                            }
-                            if ((row - 2 >= 0) && (col + 2 <= 7) && isMoveLegal(tempBoard, row, col, row - 2, col + 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row - 2;
-                                thing[3] = col + 2;
-                            }
-                        }
-                        else if (isBlack) {
-                            //Jumping
-                            if ((row + 2 <= 7) && (col - 2 >= 0) && isMoveLegal(tempBoard, row, col, row + 2, col - 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row + 2;
-                                thing[3] = col - 2;
-                            }
-                            if ((row + 2 <= 7) && (col + 2 <= 7) && isMoveLegal(tempBoard, row, col, row + 2, col + 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row + 2;
-                                thing[3] = col + 2;
-                            }
-                        }
-                        else {
-                            //Jumping
-                            if ((row - 2 >= 0) && (col - 2 >= 0) && isMoveLegal(tempBoard, row, col, row - 2, col - 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row - 2;
-                                thing[3] = col - 2;
-                            }
-                            if ((row - 2 >= 0) && (col + 2 <= 7) && isMoveLegal(tempBoard, row, col, row - 2, col + 2)) {
-                                thing[0] = row;
-                                thing[1] = col;
-                                thing[2] = row - 2;
-                                thing[3] = col + 2;
-                            }
-                        }
-                    }
-                }
-            }
-            /*
-            if(num == 3) {
-                for (int a = 0; a < 8; a++) {
-                    System.out.print(num);
-                    for (int b = 0; b < 8; b++) {
-                        if (tempBoard[a][b] != null) {
-                            if (tempBoard[a][b].isBlack)
-                                System.out.print("B ");
-                            else
-                                System.out.print("R ");
-                        } else
-                            System.out.print("_ ");
-                    }
-                    System.out.println();
-                }
-                System.out.println("\n \n");
-                System.out.println(num + " row: " + row + ", col: " + col);
-                System.out.println(isBlack);
-            }
-
-             */
-            return thing;
-        }
         public static boolean isCapture(int row1, int col1, int row2, int col2){
             //As the name implies, only meant for use in conjunction with findAllBlackMoves or findAllRedMoves
             return (row1+2==row2 || row1-2==row2) && (col1+2== col2 || col1-2==col2);
@@ -525,12 +430,12 @@ public class CheckersController extends MenuController {
                     if(board[x][y] == null)
                         continue;
                     if (!board[x][y].isBlack) {
-                        if (board[x][y].isKing() || x == 0)
+                        if (board[x][y].isKing() || (!board[x][y].isKing() && x == 0))
                             red += 5;
                         else
                             red += 3;
                     } else {
-                        if (board[x][y].isKing() || x == 7)
+                        if (board[x][y].isKing() || (!board[x][y].isKing() && x == 7))
                             black += 5;
                         else
                             black += 3;
@@ -553,6 +458,7 @@ public class CheckersController extends MenuController {
     private Piece[][] MainBoard = new Piece[8][8];
     boolean lockMove = false;
     private final int[] done = new int[4];
+    private int numberOfMoves = 0;
 
 
     public void initialize() {
@@ -565,6 +471,8 @@ public class CheckersController extends MenuController {
         displayBoard();
     }
 
+    //This method is the outer shell of the algorithm and is responsible
+    //for finding the best move, which is then relayed to startAI
     private int[] startAI(Piece[][] board) {
         List<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
         Piece[][] tempBoard = new Piece[8][8];
@@ -575,6 +483,8 @@ public class CheckersController extends MenuController {
         try {
             ExecutorService es = Executors.newCachedThreadPool();
             int tempLoopStore = allMovesBlack.size();
+            numberOfMoves = allMovesBlack.size() + findAllRedMoves(MainBoard).size();
+
             for (int x = 0; x < tempLoopStore; x++) {
                 for (int z = 0; z < 8; z++)
                     System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
@@ -621,7 +531,9 @@ public class CheckersController extends MenuController {
         //System.out.println(eval[index]);
         return finished;
     }
-    public synchronized void crappyAi() {
+
+    //This is the method that runs the basics/outer layer of the algorithm
+    public synchronized void algoShell() {
         Task<Void> sleeper = new Task<>() {
             @Override
             protected Void call() {
@@ -639,12 +551,12 @@ public class CheckersController extends MenuController {
             int[] x = startAI(MainBoard);
             System.arraycopy(x, 0, done, 0, x.length);
 
-            System.out.println((System.nanoTime() - startTime) / 1000000);
+            System.out.println(((System.nanoTime() - startTime) / 1000000) + " - " + numberOfMoves);
 
 
             movePiece(MainBoard, done[0], done[1], done[2], done[3]);
             if ((done[1] + 2 == done[3] || done[1] - 2 == done[3]) && canCapture(MainBoard, done[2], done[3])) {
-                crappyAi();
+                algoShell();
             }
             //Promotion
             if (done[2] == 7) {
@@ -655,7 +567,7 @@ public class CheckersController extends MenuController {
                         (done[0] - 2 == done[2] && done[1] + 2 == done[3]) ||
                         (done[0] - 2 == done[2] && done[1] - 2 == done[3])) {
                     if (canCapture(MainBoard, done[2], done[3])) {
-                        crappyAi();
+                        algoShell();
                     }
                 }
             }
@@ -960,10 +872,10 @@ public class CheckersController extends MenuController {
                     displayBoard();
                     if (((rowInput1 + 2 == rowInput && colInput1 + 2 == columnInput) || (rowInput1 + 2 == rowInput && colInput1 - 2 == columnInput) || (rowInput1 - 2 == rowInput && colInput1 + 2 == columnInput) || (rowInput1 - 2 == rowInput && colInput1 - 2 == columnInput))) {
                         if (!canCapture(MainBoard, rowInput, columnInput) && moved) {
-                            crappyAi();
+                            algoShell();
                         }
                     } else if (moved) {
-                        crappyAi();
+                        algoShell();
                     }
                     displayBoard();
                 }
@@ -1075,7 +987,8 @@ public class CheckersController extends MenuController {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (MainBoard[row][col] != null && !MainBoard[row][col].isBlack) {
-                    Circle RedCircle = new Circle(37.5, Color.RED);
+                    //used to be 37.5
+                    Circle RedCircle = new Circle(31.875, Color.RED);
                     RedCircle.setCenterX((col * 75) + 37.5);
                     RedCircle.setCenterY((row * 75) + 37.5);
                     RedCircle.setStyle("-fx-stroke: black; -fx-strokeType: inside");
@@ -1091,7 +1004,7 @@ public class CheckersController extends MenuController {
                     }
                 }
                 if (MainBoard[row][col] != null && MainBoard[row][col].isBlack) {
-                    Circle BlackCircle = new Circle(37.5, Color.BLACK);
+                    Circle BlackCircle = new Circle(31.875, Color.BLACK);
                     BlackCircle.setCenterX((col * 75) + 37.5);
                     BlackCircle.setCenterY((row * 75) + 37.5);
                     PieceAnchorPane.getChildren().add(BlackCircle);
@@ -1148,51 +1061,7 @@ public class CheckersController extends MenuController {
     }
 
 
-    // ----------- Shitty Tester methods -----------
-
-    /*
-    public void unitTests(){
-        double numTests = 15;
-        long total = 0, startTime;
-
-        for(int x = 0; x < numTests; x++) {
-            try {
-
-                clearBoard();
-                setStarterBoard();
-                synchronized (this) {
-                    movePiece(MainBoard, 5, 4, 4, 3);
-                    startTime = System.nanoTime();
-                    crappyAi();
-                    total += System.nanoTime() - startTime;
-                }
-                System.out.println(x);
-
-                synchronized (this) {
-                    movePiece(MainBoard, 5, 6, 4, 5);
-                    startTime = System.nanoTime();
-                    crappyAi();
-                    total += System.nanoTime() - startTime;
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-
-    }
-    */
-    public void unitTests(){
-
-    }
-
-    private void clearBoard(){
-        for(int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                MainBoard[x][y] = null;
-            }
-        }
-    }
-
+    //To be honest I don't know what this does, but it sure is here
     public void moveOnBoard(int row, int column, int newRow, int newCol){
         if (row - 2 == newRow && column + 2 == newCol) {
             MainBoard[row - 1][column + 1] = null;
