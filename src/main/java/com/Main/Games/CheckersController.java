@@ -201,7 +201,7 @@ public class CheckersController extends MenuController {
         }
 
         //Finding moves, duh
-        private List<int[]> findAllBlackMoves(Piece[][] board) {
+        public static List<int[]> findAllBlackMoves(Piece[][] board) {
             List<int[]> moves = new LinkedList<>();
             for (int x = 7; x > -1; x--) {
                 for (int y = 7; y > -1; y--) {
@@ -300,7 +300,7 @@ public class CheckersController extends MenuController {
             }
             return moves;
         }
-        private List<int[]> findAllRedMoves(Piece[][] board) {
+        public static List<int[]> findAllRedMoves(Piece[][] board) {
             List<int[]> moves = new LinkedList<>();
             int[] temp = new int[4];
             for (int x = 7; x > -1; x--) {
@@ -425,16 +425,16 @@ public class CheckersController extends MenuController {
                 for (int y = 0; y < 8; y++) {
                     if(board[x][y] == null)
                         continue;
-                    if (!board[x][y].isBlack) {
-                        if (board[x][y].isKing() || (!board[x][y].isKing() && x == 0))
-                            red += 5;
-                        else
-                            red += 3;
-                    } else {
+                    if (board[x][y].isBlack) {
                         if (board[x][y].isKing() || (!board[x][y].isKing() && x == 7))
                             black += 5;
                         else
                             black += 3;
+                    } else {
+                        if (board[x][y].isKing() || (!board[x][y].isKing() && x == 0))
+                            red += 5;
+                        else
+                            red += 3;
                     }
 
                 }
@@ -470,7 +470,7 @@ public class CheckersController extends MenuController {
     //This method is the outer shell of the algorithm and is responsible
     //for finding the best move, which is then relayed to startAI
     private int[] startAI(Piece[][] board) {
-        List<int[]> allMovesBlack = findAllBlackMoves(MainBoard);
+        List<int[]> allMovesBlack = Algorithm.findAllBlackMoves(MainBoard);
         Piece[][] tempBoard = new Piece[8][8];
         int[] finished = new int[4];
         int index;
@@ -479,7 +479,7 @@ public class CheckersController extends MenuController {
         try {
             ExecutorService es = Executors.newCachedThreadPool();
             int tempLoopStore = allMovesBlack.size();
-            numberOfMoves = allMovesBlack.size() + findAllRedMoves(MainBoard).size();
+            numberOfMoves = allMovesBlack.size() + Algorithm.findAllRedMoves(MainBoard).size();
 
             for (int x = 0; x < tempLoopStore; x++) {
                 for (int z = 0; z < 8; z++)
@@ -487,8 +487,6 @@ public class CheckersController extends MenuController {
 
                 movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
                 Algorithm myThread;
-
-                //myThread = new Algorithm(tempBoard, true, 1, x)
 
                 // Checks if last move was a capture and if I can capture again/ for chain captures
                 boolean wasLastMoveCap = Algorithm.isCapture(allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
@@ -527,7 +525,6 @@ public class CheckersController extends MenuController {
         //System.out.println(eval[index]);
         return finished;
     }
-
     //This is the method that runs the basics/outer layer of the algorithm
     public synchronized void algoShell() {
         Task<Void> sleeper = new Task<>() {
@@ -572,230 +569,6 @@ public class CheckersController extends MenuController {
         });
         new Thread(sleeper).start();
     }
-    private List<int[]> findAllBlackMoves(Piece[][] board) {
-        List<int[]> moves = new LinkedList<>();
-        for (int x = 7; x > -1; x--) {
-            for (int y = 7; y > -1; y--) {
-                int[] temp = new int[4];
-                if (board[x][y] != null && board[x][y].isBlack) {
-                    //regular pieces
-                    if (!board[x][y].isKing()) {
-                        if ((x + 1 <= 7) && (y - 1 >= 0) && isMoveLegal(board, x, y, x + 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 1 <= 7) && (y + 1 <= 7) && isMoveLegal(board, x, y, x + 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        //Jumping
-                        if ((x + 2 <= 7) && (y - 2 >= 0) && isMoveLegal(board, x, y, x + 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 2 <= 7) && (y + 2 <= 7) && isMoveLegal(board, x, y, x + 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                        }
-                    }
-                    //kings
-                    else {
-                        if ((x + 1 <= 7) && (y - 1 >= 0) && isMoveLegal(board, x, y, x + 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 1 <= 7) && (y + 1 <= 7) && isMoveLegal(board, x, y, x + 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 1 >= 0) && (y - 1 >= 0) && isMoveLegal(board, x, y, x - 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 1 >= 0) && (y + 1 <= 7) && isMoveLegal(board, x, y, x - 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        //jumping
-                        if ((x + 2 <= 7) && (y - 2 >= 0) && isMoveLegal(board, x, y, x + 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 2 <= 7) && (y + 2 <= 7) && isMoveLegal(board, x, y, x + 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 2 >= 0) && (y - 2 >= 0) && isMoveLegal(board, x, y, x - 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 2 >= 0) && (y + 2 <= 7) && isMoveLegal(board, x, y, x - 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
-    }
-    private List<int[]> findAllRedMoves(Piece[][] board) {
-        List<int[]> moves = new LinkedList<>();
-        for (int x = 7; x > -1; x--) {
-            for (int y = 7; y > -1; y--) {
-                int[] temp = new int[4];
-                if (board[x][y] != null && !board[x][y].isBlack) {
-                    if (!board[x][y].isKing()) {
-                        if ((x - 1 >= 0) && (y - 1 >= 0) && isMoveLegal(board, x, y, x - 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 1 >= 0) && (y + 1 <= 7) && isMoveLegal(board, x, y, x - 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        //Jumping
-                        if ((x - 2 >= 0) && (y - 2 >= 0) && isMoveLegal(board, x, y, x - 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 2 >= 7) && (y + 2 <= 7) && isMoveLegal(board, x, y, x - 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                        }
-                    }
-                    else {
-                        if ((x + 1 <= 7) && (y - 1 >= 0) && isMoveLegal(board, x, y, x + 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 1 <= 7) && (y + 1 <= 7) && isMoveLegal(board, x, y, x + 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 1 >= 0) && (y - 1 >= 0) && isMoveLegal(board, x, y, x - 1, y - 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y - 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 1 >= 0) && (y + 1 <= 7) && isMoveLegal(board, x, y, x - 1, y + 1)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 1;
-                            temp[3] = y + 1;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        //jumping
-                        if ((x + 2 <= 7) && (y - 2 >= 0) && isMoveLegal(board, x, y, x + 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x + 2 <= 7) && (y + 2 <= 7) && isMoveLegal(board, x, y, x + 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x + 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 2 >= 0) && (y - 2 >= 0) && isMoveLegal(board, x, y, x - 2, y - 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y - 2;
-                            moves.add(temp);
-                            temp = new int[4];
-                        }
-                        if ((x - 2 >= 0) && (y + 2 <= 7) && isMoveLegal(board, x, y, x - 2, y + 2)) {
-                            temp[0] = x;
-                            temp[1] = y;
-                            temp[2] = x - 2;
-                            temp[3] = y + 2;
-                            moves.add(temp);
-                        }
-                    }
-                }
-            }
-        }
-        return moves;
-    }
 
     private int[] getScores(Piece[][] board) {
         int red = 0;
@@ -819,8 +592,8 @@ public class CheckersController extends MenuController {
         return new int[]{red, black};
     }
     private void checkWinner() {
-        List<int[]> blackMoves = findAllBlackMoves(MainBoard);
-        List<int[]> redMoves = findAllRedMoves(MainBoard);
+        List<int[]> blackMoves = Algorithm.findAllBlackMoves(MainBoard);
+        List<int[]> redMoves = Algorithm.findAllRedMoves(MainBoard);
         int[] scores = getScores(MainBoard);
         if (scores[0] == 0 || (!blackMoves.isEmpty() && redMoves.isEmpty())) {
             winner("B");
@@ -887,7 +660,7 @@ public class CheckersController extends MenuController {
         move(row, col);
     }
 
-    private boolean isMoveLegal(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2) {
+    private static boolean isMoveLegal(Piece[][] board, int rowInput1, int colInput1, int rowInput2, int colInput2) {
         //bounds detection
         if ((rowInput1 < 0 || colInput1 > 7) || (rowInput2 < 0 || colInput2 > 7))
             return false;
@@ -982,36 +755,32 @@ public class CheckersController extends MenuController {
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if (MainBoard[row][col] != null && !MainBoard[row][col].isBlack) {
-                    //used to be 37.5
-                    Circle RedCircle = new Circle(31.875, Color.RED);
-                    RedCircle.setCenterX((col * 75) + 37.5);
-                    RedCircle.setCenterY((row * 75) + 37.5);
-                    RedCircle.setStyle("-fx-stroke: black; -fx-strokeType: inside");
-                    PieceAnchorPane.getChildren().add(RedCircle);
-                    if (MainBoard[row][col].isKing()) {
-                        Text RedKing = new Text(col * 75, row * 75, "K");
-                        RedKing.setLayoutX(29);
-                        RedKing.setLayoutY(48);
-                        RedKing.setFont(new Font(30));
-                        PieceAnchorPane.getChildren().add(RedKing);
-                    }
+                if (MainBoard[row][col] == null) {
+                    continue;
                 }
-                if (MainBoard[row][col] != null && MainBoard[row][col].isBlack) {
-                    Circle BlackCircle = new Circle(31.875, Color.BLACK);
-                    BlackCircle.setCenterX((col * 75) + 37.5);
-                    BlackCircle.setCenterY((row * 75) + 37.5);
-                    PieceAnchorPane.getChildren().add(BlackCircle);
-                    if (MainBoard[row][col].isKing()) {
-                        Text BlackKing = new Text(col * 75, row * 75, "K");
-                        BlackKing.setLayoutX(29);
-                        BlackKing.setLayoutY(48);
-                        BlackKing.setFont(new Font(30));
-                        BlackKing.setFill(Color.WHITE);
-                        pleaseWork.getChildren().add(BlackKing);
+                Circle circle;
+                boolean isBlack = MainBoard[row][col].isBlack;
+                if(!isBlack) {
+                    circle = new Circle(31.875, Color.RED);
+                    circle.setStyle("-fx-stroke: black; -fx-strokeType: inside");
+                } else {
+                    circle = new Circle(31.875, Color.BLACK);
+                }
+                circle.setCenterX((col * 75) + 38.5);
+                circle.setCenterY((row * 75) + 37.5);
+                PieceAnchorPane.getChildren().add(circle);
+                if (MainBoard[row][col].isKing()) {
+                    Text king = new Text(col * 75, row * 75, "K");
+                    king.setLayoutX(29);
+                    king.setLayoutY(48);
+                    king.setFont(new Font(30));
+                    if(isBlack) {
+                        king.setFill(Color.WHITE);
                     }
+                    PieceAnchorPane.getChildren().add(king);
                 }
             }
+
         }
     }
     private void setStarterBoard() {
@@ -1052,7 +821,6 @@ public class CheckersController extends MenuController {
             e.printStackTrace();
         }
     }
-
 
     //To be honest I don't know what this does, but it sure is here
     public void moveOnBoard(int row, int column, int newRow, int newCol){
