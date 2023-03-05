@@ -54,26 +54,22 @@ public class CheckersController extends MenuController {
             int maxDepth;
 
             if(numberOfMoves >= 21) {
-                System.out.println(6);
                 maxDepth = 6;
             }
             else if(numberOfMoves > 13) {
-                System.out.println(7);
                 maxDepth = 7;
             }
             else if (numberOfMoves > 8) {
-                System.out.println(8);
                 maxDepth = 8;
             }
             else{
-                System.out.println(9);
                 maxDepth = 9;
             }
 
             eval[num] = findBestMove(boardT, isBlackT, 0, maxDepth);
         }
 
-        //The recursive backtracking methods
+        //The recursive methods
         //The bane of my existence
         private synchronized double findBestMove(Piece[][] board, boolean isBlack, int depth, int maxDepth){
             Piece[][] tempBoard;
@@ -448,7 +444,7 @@ public class CheckersController extends MenuController {
     }
 
     @FXML
-    AnchorPane popUp, PieceAnchorPane;
+    AnchorPane popUp, PieceAnchorPane, pleaseWork;
     @FXML
     Text finalText;
 
@@ -994,9 +990,7 @@ public class CheckersController extends MenuController {
                     RedCircle.setStyle("-fx-stroke: black; -fx-strokeType: inside");
                     PieceAnchorPane.getChildren().add(RedCircle);
                     if (MainBoard[row][col].isKing()) {
-                        Text RedKing = new Text("K");
-                        RedKing.setX(col * 75);
-                        RedKing.setY(row * 75);
+                        Text RedKing = new Text(col * 75, row * 75, "K");
                         RedKing.setLayoutX(29);
                         RedKing.setLayoutY(48);
                         RedKing.setFont(new Font(30));
@@ -1009,13 +1003,12 @@ public class CheckersController extends MenuController {
                     BlackCircle.setCenterY((row * 75) + 37.5);
                     PieceAnchorPane.getChildren().add(BlackCircle);
                     if (MainBoard[row][col].isKing()) {
-                        Text BlackKing = new Text("K");
-                        BlackKing.setX(col * 75);
-                        BlackKing.setY(row * 75);
+                        Text BlackKing = new Text(col * 75, row * 75, "K");
                         BlackKing.setLayoutX(29);
                         BlackKing.setLayoutY(48);
-                        BlackKing.setStyle("-fx-text-fill: white");
-                        PieceAnchorPane.getChildren().add(BlackKing);
+                        BlackKing.setFont(new Font(30));
+                        BlackKing.setFill(Color.WHITE);
+                        pleaseWork.getChildren().add(BlackKing);
                     }
                 }
             }
