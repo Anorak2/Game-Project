@@ -41,18 +41,22 @@ public class CheckersController extends MenuController {
         private final Piece[][] boardT = new Piece[8][8];
         private final boolean isBlackT;
         private final int num;
-        public Algorithm(Piece[][] board, boolean isBlack, int num) {
+        private int maxDepth;
+        private final boolean isMulti;
+        private final int[] lastMove;
+
+        public Algorithm(Piece[][] board, boolean isBlack, int num, boolean isMulti, int[] lastMove) {
             int tempLoopStore = board.length;
             for (int x = 0; x < tempLoopStore; x ++)
                 System.arraycopy(board[x], 0, boardT[x], 0, board[x].length);
             this.isBlackT = isBlack;
             this.num = num;
+            this.isMulti = isMulti;
+            this.lastMove = lastMove;
         }
 
         @Override
         public void run() {
-            int maxDepth;
-
             if(numberOfMoves >= 21) {
                 maxDepth = 6;
             }
@@ -66,12 +70,12 @@ public class CheckersController extends MenuController {
                 maxDepth = 9;
             }
 
-            eval[num] = findBestMove(boardT, isBlackT, 0, maxDepth);
+            eval[num] = findBestMove(boardT, isBlackT, 0, isMulti, lastMove);
         }
 
         //The recursive methods
         //The bane of my existence
-        private synchronized double findBestMove(Piece[][] board, boolean isBlack, int depth, int maxDepth){
+        private synchronized double findBestMove(Piece[][] board, boolean isBlack, int depth, boolean isMulti, int[] lastMove){
             Piece[][] tempBoard;
             int index;
             List<int[]> allMoves;
@@ -95,18 +99,29 @@ public class CheckersController extends MenuController {
             }
             scores = new ArrayList<>(allMoves.size());
             for (int[] ints : allMoves) {
+                //Enforcing multi-capture rules
+                //Currently doesn't work
+                if(isMulti && (ints[0] != lastMove[2] || ints[1] != lastMove[3])){
+                    continue;
+                }
+                //---------- Recursion ----------
+                //This method creates the new recursive methods
                 tempBoard = new Piece[8][8];
                 for (int z = 0; z < 8; z++) {
                     System.arraycopy(board[z], 0, tempBoard[z], 0, 8);
                 }
+
                 movePiece(tempBoard, ints[0], ints[1], ints[2], ints[3]);
                 //MultiCapture
                 //Checks if the last move was a capture and if we can capture again
-                if (isCapture(ints[0], ints[1], ints[2], ints[3]) && canCapture(tempBoard, ints[2], ints[3])) {
-                    scores.add(findBestMove(tempBoard, isBlack, depth+1, maxDepth));
+                int[] temp = new int[4];
+                System.arraycopy(ints, 0, temp, 0, 4);
+
+                if (isCapture(ints) && canCapture(tempBoard, ints[2], ints[3])) {
+                    scores.add(findBestMove(tempBoard, isBlack, depth + 1, true, temp));
                 }
                 else{
-                    scores.add(findBestMove(tempBoard, !isBlack, depth + 1, maxDepth));
+                    scores.add(findBestMove(tempBoard, !isBlack, depth + 1, false, temp));
                 }
             }
 
@@ -158,24 +173,22 @@ public class CheckersController extends MenuController {
 
 
             //This takes into account the distance to becoming royalty
-            /*
             int blackDistance = 0, redDistance = 0;
             for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    if (board[x][y] != null && !board[x][y].isKing) {
-                        if (board[x][y].isBlack)
-                            blackDistance += x;
-                        else
-                            redDistance += (7 - x);
-                    }
+                if (board[1][x] != null && !board[1][x].isKing) {
+                    if (!board[1][x].isBlack)
+                        redDistance += x;
+                }
+                if (board[6][x] != null && !board[6][x].isKing) {
+                    if (board[6][x].isBlack)
+                        blackDistance += x;
                 }
             }
-
             if (blackDistance > redDistance)
-                positionScoreForBlack += 1.5;
+                positionScoreForBlack += 1;
             else if (blackDistance < redDistance)
-                positionScoreForBlack -= 1.5;
-            */
+                positionScoreForBlack -= 1;
+
 
             // Random element
             positionScoreForBlack += (Math.random() * 1) - .5;
@@ -397,9 +410,9 @@ public class CheckersController extends MenuController {
             }
             return moves;
         }
-        public static boolean isCapture(int row1, int col1, int row2, int col2){
-            //As the name implies, only meant for use in conjunction with findAllBlackMoves or findAllRedMoves
-            return (row1+2==row2 || row1-2==row2) && (col1+2== col2 || col1-2==col2);
+        public static boolean isCapture(int[] moves){
+            //the order is row1, col1, row2, col2 in terms of index
+            return (moves[0]+2==moves[2] || moves[0]-2==moves[2] ) && (moves[1]+2==moves[3]  || moves[1]-2==moves[3]);
         }
 
         //some helper methods for evaluatePosition, red then black to avoid code duplication
@@ -455,6 +468,8 @@ public class CheckersController extends MenuController {
     boolean lockMove = false;
     private final int[] done = new int[4];
     private int numberOfMoves = 0;
+    private final int[] botLastMove = new int[4];
+    private boolean  botMulti = false;
 
 
     public void initialize() {
@@ -482,18 +497,31 @@ public class CheckersController extends MenuController {
             numberOfMoves = allMovesBlack.size() + Algorithm.findAllRedMoves(MainBoard).size();
 
             for (int x = 0; x < tempLoopStore; x++) {
+
                 for (int z = 0; z < 8; z++)
                     System.arraycopy(board[z], 0, tempBoard[z], 0, board.length);
+                //Copying the array for last move and qol
+                int[] temp = new int[4];
+                System.arraycopy(allMovesBlack.get(x), 0, temp, 0, 4);
 
-                movePiece(tempBoard, allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
+                //If last move was a capture, and if I could capture after last move with
+                //the same piece, but my next move isn't a capture, skip it.
+                //Basically forced capture for multiple jumps
+                if(botMulti && Algorithm.isCapture(botLastMove) && (temp[0] != botLastMove[2] || temp[1] != botLastMove[3])){
+                    continue;
+                }
+
+                movePiece(tempBoard, temp[0], temp[1], temp[2], temp[3]);
                 Algorithm myThread;
 
+                //Forcing multi-capture rules
+
                 // Checks if last move was a capture and if I can capture again/ for chain captures
-                boolean wasLastMoveCap = Algorithm.isCapture(allMovesBlack.get(x)[0], allMovesBlack.get(x)[1], allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]);
-                if (wasLastMoveCap && canCapture(tempBoard, allMovesBlack.get(x)[2], allMovesBlack.get(x)[3]))
-                    myThread = new Algorithm(tempBoard, true, x);
+                boolean wasLastMoveCap = Algorithm.isCapture(temp);
+                if (wasLastMoveCap && canCapture(tempBoard, temp[2], temp[3]))
+                    myThread = new Algorithm(tempBoard, true, x, true, temp);
                 else
-                    myThread = new Algorithm(tempBoard, false, x);
+                    myThread = new Algorithm(tempBoard, false, x, false, temp);
 
                 es.execute(myThread);
             }
@@ -514,15 +542,12 @@ public class CheckersController extends MenuController {
                     lowest = x;
             }
         }
-        //if (highest == lowest)
-        //    index = (int) (Math.random() * allMovesBlack.size());
-        //else
         index = highest;
 
-        if (allMovesBlack.size() > 0)
-            System.arraycopy(allMovesBlack.get(index), 0, finished, 0, allMovesBlack.get(index).length);
-        //System.out.println(Arrays.toString(eval));
-        //System.out.println(eval[index]);
+        if (allMovesBlack.size() > 0) {
+            System.arraycopy(allMovesBlack.get(index), 0, finished, 0, 4);
+            System.arraycopy(allMovesBlack.get(index), 0, botLastMove, 0, 4);
+        }
         return finished;
     }
     //This is the method that runs the basics/outer layer of the algorithm
@@ -548,6 +573,9 @@ public class CheckersController extends MenuController {
 
 
             movePiece(MainBoard, done[0], done[1], done[2], done[3]);
+
+            //Necessary to force multi-capture
+            botMulti = canCapture(MainBoard, done[2], done[3]);
             if ((done[1] + 2 == done[3] || done[1] - 2 == done[3]) && canCapture(MainBoard, done[2], done[3])) {
                 algoShell();
             }
@@ -599,15 +627,13 @@ public class CheckersController extends MenuController {
             winner("B");
         } else if (scores[1] == 0 || (blackMoves.isEmpty() && !redMoves.isEmpty())) {
             winner("R");
-        } else if (blackMoves.isEmpty()) {
-            winner("T");
         }
     }
     private void winner(String s) {
         popUp.setVisible(true);
         lockMove = true;
-        if (s.equals("T")) {
-            finalText.setText("Tie!");
+        if (s.equals("R")) {
+            finalText.setText("You Win!");
         } else if (s.equals("B")) {
             finalText.setText("You Lose!");
         }
