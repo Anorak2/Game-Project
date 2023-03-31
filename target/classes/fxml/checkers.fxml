@@ -70,6 +70,7 @@
             </children>
         </GridPane>
         <AnchorPane fx:id="PieceAnchorPane" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0">
+
             <Text fx:id="king1" layoutX="29.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="K">
                 <font>
                     <Font size="30.0" />
@@ -77,6 +78,8 @@
             </Text>
         </AnchorPane>
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="600.0" onMouseClicked="#mouseClick" opacity="0.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="600.0" />
+        <Button mnemonicParsing="false" onAction="#unitTests" text="UnitTests" />
+
         <AnchorPane fx:id="popUp" layoutX="200.0" layoutY="250.0" prefHeight="100.0" prefWidth="200.0">
             <children>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#dec9af" height="100.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
