@@ -45,6 +45,8 @@ public class CheckersController extends MenuController {
         private final boolean isMulti;
         private final int[] lastMove;
 
+        private SplittableRandom rand_generator = new SplittableRandom();
+
         public Algorithm(Piece[][] board, boolean isBlack, int num, boolean isMulti, int[] lastMove) {
             int tempLoopStore = board.length;
             for (int x = 0; x < tempLoopStore; x++)
@@ -57,12 +59,15 @@ public class CheckersController extends MenuController {
 
         @Override
         public void run() {
+            // 0 easy, 1 normal, 2 hard
+            int [][] difficulty = {{5,6,7}, {6,7,8}, {7, 8, 9}};
+            int mode = 2;
             if (numberOfMoves >= 21) {
-                maxDepth = 6;
+                maxDepth = difficulty[mode][0];
             } else if (numberOfMoves > 13) {
-                maxDepth = 7;
+                maxDepth = difficulty[mode][1];
             } else if (numberOfMoves > 8) {
-                maxDepth = 8;
+                maxDepth = difficulty[mode][2];
             }
 
             ThreadMXBean mxbean = ManagementFactory.getThreadMXBean();
@@ -80,22 +85,25 @@ public class CheckersController extends MenuController {
             Double[] scores;
 
             // The exit clause
-            if (depth == maxDepth)
+            if (depth == maxDepth) {
                 return evaluatePosition(board);
-
+            }
 
             // Exit if the game is won or lost
-            double check = simpleEvaluate(board);
+            double check = simpleEvaluate(board, true);
             if (check != 0) {
                 return check;
             }
 
             //---------- Main Logic ----------
+            long startTime = System.nanoTime();
             if (isBlack) {
                 allMoves = findAllBlackMoves(board);
             } else {
                 allMoves = findAllRedMoves(board);
             }
+            long endTime = System.nanoTime();
+            findAll += (endTime - startTime);
             scores = new Double[allMoves.size()];
             int iteration = 0;
 
@@ -152,28 +160,61 @@ public class CheckersController extends MenuController {
             //Score is next important, kings = 5 plebeians = 3
             //Then Distance to king a piece
             //Finally there is a slightly random component
-
-            double simpleEval = simpleEvaluate(board);
+            long evalStartTime = System.nanoTime();
+            long startTime = System.nanoTime();
+            double simpleEval = simpleEvaluate(board, false);
             if (simpleEval != 0)
                 return simpleEval;
+            long endTime = System.nanoTime();
+            simpleEvalTime += endTime - startTime;
 
             //Red then black
+            startTime = System.nanoTime();
             int[] scores = getScores(board);
             double positionScoreForBlack = 0;
+            endTime = System.nanoTime();
+            getScores += endTime - startTime;
+
+            if(scores[0] == 0){
+                return 999999;
+            }
+            else if (scores[1] == 0){
+                return -999999;
+            }
 
             // difference in score x10 to emphasize importance of score
             positionScoreForBlack += (scores[1] - scores[0]) * 4.5;
 
 
             // Random element
-            positionScoreForBlack += (Math.random() * 1) - .5;
-
+            startTime = System.nanoTime();
+            positionScoreForBlack += (rand_generator.nextDouble() * 1) - .5;
+            endTime = System.nanoTime();
+            evalRand += endTime - startTime;
+            endTime = System.nanoTime();
+            evalPosition += endTime - evalStartTime;
             return positionScoreForBlack;
         }
 
 
         // These are extremely cut down methods which are used for efficiency
-        private double simpleEvaluate(Piece[][] board) {
+        private double simpleEvaluate(Piece[][] board, boolean check_pieces) {
+
+            long startTime = System.nanoTime();
+            //If black has no moves available
+            if (!simpleBlackMoves(board)) {
+                return -999999;
+            }
+            //if red has no moves available
+            else if (!simpleRedMoves(board)) {
+                return 999999;
+            }
+            long endTime = System.nanoTime();
+            simpleMoves += endTime - startTime;
+
+            if(!check_pieces) {
+                return 0;
+            }
             boolean[] pieceCount = simpleCount(board);
 
             //If there are no red pieces
@@ -184,15 +225,6 @@ public class CheckersController extends MenuController {
             else if (!pieceCount[1]) {
                 return -999999;
             }
-            //If black has no moves available
-            else if (!simpleBlackMoves(board)) {
-                return -999999;
-            }
-            //if red has no moves available
-            else if (!simpleRedMoves(board)) {
-                return 999999;
-            }
-
             return 0;
         }
         private boolean[] simpleCount(Piece[][] board) {
@@ -222,26 +254,7 @@ public class CheckersController extends MenuController {
                     if (board[x][y] == null || !board[x][y].isBlack) {
                         continue;
                     }
-
-                    //regular pieces
-                    if (!board[x][y].isKing()) {
-                        if (isMoveLegal(board, x, y, x + 1, y - 1)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x + 1, y + 1)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x + 2, y - 2)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x + 2, y + 2)) {
-                            return true;
-                        }
-                    }
-                    //kings
-                    else if(simpleKings(board,x,y)){
-                        return true;
-                    }
+                    return anyValidMoves(board, x, y);
                 }
             }
             return false;
@@ -252,54 +265,8 @@ public class CheckersController extends MenuController {
                     if (board[x][y] == null || board[x][y].isBlack) {
                         continue;
                     }
-                    //regular pieces
-                    if(!board[x][y].isKing) {
-                        if (isMoveLegal(board, x, y, x - 1, y - 1)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x - 1, y + 1)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x - 2, y - 2)) {
-                            return true;
-                        }
-                        if (isMoveLegal(board, x, y, x - 2, y + 2)) {
-                            return true;
-                        }
-                    }
-                    //kings
-                    else if (simpleKings(board, x, y)){
-                        return true;
-                    }
+                    return anyValidMoves(board, x, y);
                 }
-            }
-            return false;
-        }
-        private static boolean simpleKings(Piece[][] board, int x, int y){
-            if (isMoveLegal(board, x, y, x + 1, y - 1)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x + 1, y + 1)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x - 1, y - 1)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x - 1, y + 1)) {
-                return true;
-            }
-            //jumping
-            if (isMoveLegal(board, x, y, x - 2, y - 2)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x - 2, y + 2)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x + 2, y - 2)) {
-                return true;
-            }
-            if (isMoveLegal(board, x, y, x + 2, y + 2)) {
-                return true;
             }
             return false;
         }
@@ -448,6 +415,8 @@ public class CheckersController extends MenuController {
 
     private double[] eval;
     private long[] times;
+    private long findAll = 0, simpleMoves = 1, evalPosition = 0, evalRand = 0, getScores = 0, simpleEvalTime = 0;
+
 
     private int rowInput1, colInput1;
     private Piece[][] MainBoard = new Piece[8][8];
@@ -557,7 +526,19 @@ public class CheckersController extends MenuController {
 
             int[] x = startAI(MainBoard);
             System.arraycopy(x, 0, done, 0, x.length);
-            System.out.println(Arrays.stream(times).sum() / 1000000);
+            Arrays.sort(times);
+            System.out.println("\n---------------------");
+            System.out.println("Find all moves: " +  findAll / 1000000);
+            System.out.println("SimpleMoves family: " +  simpleMoves / 1000000);
+            System.out.println("Evaluating position: " +  evalPosition / 1000000);
+
+            System.out.println("\nSimple Evaluate: " +  simpleEvalTime / 1000000);
+            System.out.println("Getting Scores: " +  getScores / 1000000);
+            System.out.println("Random Element: " +  evalRand / 1000000);
+
+            System.out.println("\nShortest thread: " + times[0] / 1000000);
+            System.out.println("Longest thread: " + times[times.length-1] / 1000000);
+            System.out.println("---------------------\n");
 
 
             movePiece(MainBoard, done[0], done[1], done[2], done[3]);
@@ -671,7 +652,7 @@ public class CheckersController extends MenuController {
     public void mouseClick(MouseEvent e) {
         int row = (int) e.getSceneY() / 75;
         int col = (int) e.getSceneX() / 75;
-        System.out.println("row: " + row + "  col:" + col);
+        //System.out.println("row: " + row + "  col:" + col);
         move(row, col);
     }
 
@@ -745,6 +726,75 @@ public class CheckersController extends MenuController {
         return false;
 
     }
+
+    private static boolean anyValidMoves(Piece[][] board, int rowInput1, int colInput1) {
+        //bounds detection for first set of inputs
+        if (rowInput1 < 0 || rowInput1 > 7 || colInput1 < 0 || colInput1 > 7 ) {
+            return false;
+        }
+        //protecting from nulls
+        if (board[rowInput1][colInput1] == null)
+            return false;
+        boolean PieceIsBlack = board[rowInput1][colInput1].isBlack;
+
+        //logic for king
+        if (board[rowInput1][colInput1].isKing()) {
+            if ( rowInput1 - 1 >= 0 && colInput1 + 1 < 8 && board[rowInput1 - 1][colInput1 + 1] == null) {
+                return true;
+            } else if (rowInput1 - 1 >= 0 && colInput1 - 1 >= 0 && board[rowInput1 - 1][colInput1 - 1] == null) {
+                return true;
+            } else if (rowInput1 + 1 < 8 && colInput1 - 1 >= 0 && board[rowInput1 + 1][colInput1 - 1] == null) {
+                return true;
+            } else if (rowInput1 + 1 < 8 && colInput1 + 1 < 8 && board[rowInput1 + 1][colInput1 + 1] == null) {
+                return true;
+            } else {
+                //Jumping Logic
+                if (rowInput1 - 2 >= 0 && colInput1 + 2 < 8 && board[rowInput1 - 1][colInput1 + 1] != null && !board[rowInput1 - 1][colInput1 + 1].isBlack == PieceIsBlack) {
+                    return true;
+                } else if (rowInput1 - 2 >= 0 && colInput1 - 2 >= 0 && board[rowInput1 - 1][colInput1 - 1] != null && !board[rowInput1 - 1][colInput1 - 1].isBlack == PieceIsBlack) {
+                    return true;
+                } else if (rowInput1 + 2 < 8 && colInput1 + 2 < 8 && board[rowInput1 + 1][colInput1 + 1] != null && !board[rowInput1 + 1][colInput1 + 1].isBlack == PieceIsBlack) {
+                    return true;
+                } else if (rowInput1 + 2 < 8  && colInput1 - 2 >= 0 && board[rowInput1 + 1][colInput1 - 1] != null && !board[rowInput1 + 1][colInput1 - 1].isBlack == PieceIsBlack) {
+                    return true;
+                }
+            }
+        }
+        //logic for Black
+        if (PieceIsBlack) {
+            //Checking to move diagonally forward one space
+            if (rowInput1 + 1 < 8 && colInput1 - 1 > -1 && (board[rowInput1 + 1][colInput1 - 1] == null)) {
+                return true;
+            } else if (rowInput1 + 1 < 8 && colInput1 + 1 < 8 && (board[rowInput1 + 1][colInput1 + 1] == null)) {
+                return true;
+            }
+            //Jumping Logic
+            else if (rowInput1 + 2 < 8 && colInput1 + 2 < 8 && board[rowInput1 + 1][colInput1 + 1] != null && !board[rowInput1 + 1][colInput1 + 1].isBlack) {
+                return true;
+            } else if (rowInput1 + 2 < 8 && colInput1 - 2 > -1 && board[rowInput1 + 1][colInput1 - 1] != null && !board[rowInput1 + 1][colInput1 - 1].isBlack) {
+                return true;
+            }
+        }
+        //logic for Red
+        else{
+            //Checking to move diagonally forward one space
+            if (rowInput1 - 1 >= 0 && colInput1 - 1 >= 0 && (board[rowInput1 - 1][colInput1 - 1] == null)) {
+                return true;
+            } else if (rowInput1 - 1 >= 0 && colInput1 + 1 < 8 && (board[rowInput1 - 1][colInput1 + 1] == null)) {
+                return true;
+            }
+            //Jumping Logic
+            else if (rowInput1 - 2 >= 0 && colInput1 + 2 < 8 && board[rowInput1 - 1][colInput1 + 1] != null && board[rowInput1 - 1][colInput1 + 1].isBlack) {
+                return true;
+            } else if (rowInput1 - 2 >= 0 && colInput1 - 2 >= 0 && board[rowInput1 - 1][colInput1 - 1] != null && board[rowInput1 - 1][colInput1 - 1].isBlack) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
     private void movePiece(Piece[][] board, int row, int column, int newRow, int newCol) {
         if (row - 2 == newRow && column + 2 == newCol) {
             board[row - 1][column + 1] = null;
